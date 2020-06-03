@@ -29,6 +29,7 @@ namespace Fizix {
       return Sse.MoveMask(oob) == 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ContainsRect(in Vector128<float> a, in Vector128<float> b)
       => Sse.IsSupported
         ? ContainsRectSse(a, b)

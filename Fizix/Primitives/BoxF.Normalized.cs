@@ -32,6 +32,7 @@ namespace Fizix {
       return Sse.MoveLowToHigh(min, max);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Normalized(in Vector128<float> r)
       => Sse.IsSupported
         ? NormalizedSse(r)

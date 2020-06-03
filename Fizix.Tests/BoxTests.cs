@@ -197,7 +197,7 @@ namespace Fizix.Tests {
           BoxF.IsIntersectingNaive(boxes[i], boxes[j]);
 
         var t = sw.ElapsedTicks;
-        Console.WriteLine($"IsIntersectingNaive ticks {run}: {t} total, ~{t/(double)(count*count)} ea.");
+        TestContext.Out.WriteLine($"IsIntersectingNaive ticks {run}: {t} total, ~{t/(double)(count*count)} ea.");
       }
 
       for (var run = 0; run < 3; ++run) {
@@ -207,7 +207,7 @@ namespace Fizix.Tests {
           BoxF.IsIntersectingSse(boxes[i], boxes[j]);
 
         var t = sw.ElapsedTicks;
-        Console.WriteLine($"IsIntersectingSse ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
+        TestContext.Out.WriteLine($"IsIntersectingSse ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
       }
     }
 
@@ -233,7 +233,7 @@ namespace Fizix.Tests {
           BoxF.ContainsRectNaive(boxes[i], boxes[j]);
 
         var t = sw.ElapsedTicks;
-        Console.WriteLine($"ContainsRectNaive ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
+        TestContext.Out.WriteLine($"ContainsRectNaive ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
       }
 
       for (var run = 0; run < 3; ++run) {
@@ -243,7 +243,7 @@ namespace Fizix.Tests {
           BoxF.ContainsRectSse(boxes[i], boxes[j]);
 
         var t = sw.ElapsedTicks;
-        Console.WriteLine($"ContainsRectSse ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
+        TestContext.Out.WriteLine($"ContainsRectSse ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
       }
     }
 
@@ -269,7 +269,7 @@ namespace Fizix.Tests {
           BoxF.UnionedNaive(boxes[i], boxes[j]);
 
         var t = sw.ElapsedTicks;
-        Console.WriteLine($"UnionedNaive ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
+        TestContext.Out.WriteLine($"UnionedNaive ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
       }
 
       for (var run = 0; run < 3; ++run) {
@@ -279,7 +279,7 @@ namespace Fizix.Tests {
           BoxF.UnionedSse(boxes[i], boxes[j]);
 
         var t = sw.ElapsedTicks;
-        Console.WriteLine($"UnionedSse ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
+        TestContext.Out.WriteLine($"UnionedSse ticks {run}: {t}, ~{t/(double)(count*count)} ea.");
       }
     }
 

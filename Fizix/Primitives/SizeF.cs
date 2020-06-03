@@ -55,21 +55,27 @@ namespace Fizix {
     public static explicit operator PointF(in SizeF v)
       => Unsafe.As<SizeF, PointF>(ref Unsafe.AsRef( v ));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SizeF operator +(in SizeF p, in Vector2 v)
       => Vector2.Add(p,v);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SizeF operator -(in SizeF p, in Vector2 v)
       => Vector2.Subtract(p,v);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SizeF operator +(in SizeF p, float v)
       => Vector2.Add(p,  new Vector2(v));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SizeF operator -(in SizeF p, float v)
       => Vector2.Subtract(p, new Vector2(v));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SizeF operator *(in SizeF p, float v)
       => Vector2.Multiply(p, new Vector2(v));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SizeF operator /(in SizeF p, float v)
       => Vector2.Divide(p, new Vector2(v));
 
@@ -95,6 +101,7 @@ namespace Fizix {
     public override int GetHashCode()
       => _value.GetHashCode();
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Deconstruct(out float w, out float h)
       => (w, h) = (Width, Height);
 

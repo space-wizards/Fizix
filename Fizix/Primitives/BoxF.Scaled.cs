@@ -41,6 +41,7 @@ namespace Fizix {
       return Sse.Shuffle(scaled, scaled, 0b11_01_10_00);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Scaled(in Vector128<float> r, float p)
       => Sse3.IsSupported
         ? ScaledSse3(r, p)

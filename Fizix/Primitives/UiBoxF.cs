@@ -11,47 +11,75 @@ namespace Fizix {
     private BoxF _box;
 #pragma warning restore 649
 
-    public float X1
-      => _box.X1;
+    public float X1 {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.X1;
+    }
 
-    public float Y1
-      => _box.Y1;
+    public float Y1 {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Y1;
+    }
 
-    public float X2
-      => _box.X2;
+    public float X2 {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.X2;
+    }
 
-    public float Y2
-      => _box.Y2;
+    public float Y2 {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Y2;
+    }
 
-    public float Top
-      => _box.Bottom;
+    public float Top {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Bottom;
+    }
 
-    public float Left
-      => _box.Left;
+    public float Left {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Left;
+    }
 
-    public float Bottom
-      => _box.Top;
+    public float Bottom {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Top;
+    }
 
-    public float Right
-      => _box.Right;
+    public float Right {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Right;
+    }
 
-    public float Width
-      => _box.Width;
+    public float Width {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Width;
+    }
 
-    public float Height
-      => _box.Height;
+    public float Height {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Height;
+    }
 
-    public PointF BottomLeft
-      => _box.TopLeft;
+    public PointF BottomLeft {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.TopLeft;
+    }
 
-    public PointF TopRight
-      => _box.BottomRight;
+    public PointF TopRight {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.BottomRight;
+    }
 
-    public PointF Center
-      => _box.Center;
+    public PointF Center {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Center;
+    }
 
-    public SizeF Size
-      => _box.Size;
+    public SizeF Size {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => _box.Size;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator ValueTuple<float, float, float, float>(UiBoxF v)

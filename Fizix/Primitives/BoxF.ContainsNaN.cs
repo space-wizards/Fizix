@@ -17,6 +17,7 @@ namespace Fizix {
     private static bool HasNaNSse(in Vector128<float> r)
       => Sse.MoveMask(Sse.CompareUnordered(r, default)) != 0;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ContainsNaN(in Vector128<float> r)
       => Sse.IsSupported
         ? HasNaNSse(r)

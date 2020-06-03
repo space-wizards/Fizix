@@ -454,7 +454,7 @@ namespace Fizix.Tests {
         var sw = Stopwatch.StartNew();
         for (var i = 0; i < boxes.Length; ++i)
           Assert.True(dt.Add(i), $"Add {i}");
-        Console.WriteLine($"Added {count} in {sw.ElapsedMilliseconds}ms");
+        TestContext.Out.WriteLine($"Added {count} in {sw.ElapsedMilliseconds}ms");
       });
 
       PointF point = (0, 0);
@@ -471,7 +471,7 @@ namespace Fizix.Tests {
           results.Add(item);
         }
 
-        Console.WriteLine($"Queried {results.Count} in {sw.ElapsedMilliseconds}ms");
+        TestContext.Out.WriteLine($"Queried {results.Count} in {sw.ElapsedMilliseconds}ms");
       }
       results.Sort(Comparer<int>.Default);
 

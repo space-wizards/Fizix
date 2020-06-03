@@ -23,6 +23,7 @@ namespace Fizix {
       return m == 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Finite(in Vector128<float> r)
       => Sse.IsSupported
         ? FiniteSse(r)

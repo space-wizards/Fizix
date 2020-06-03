@@ -21,6 +21,7 @@ namespace Fizix {
     public static void GetCorners(in this QuadF q, out PointF tl, out PointF br, out PointF tr, out PointF bl)
       => QuadF.Corners(q, out tl, out br, out tr, out bl);
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void GetBounds(in this QuadF q, out BoxF b)
       => QuadF.BoundingBox(q, out b);
     

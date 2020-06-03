@@ -28,6 +28,7 @@ namespace Fizix {
       return Sse.Shuffle(ordered, ordered, 0b00_10_01_11);
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Grown(in Vector128<float> r, float p)
       => Sse3.IsSupported
         ? GrownSse3(r, p)

@@ -98,6 +98,7 @@ namespace Fizix {
     public override int GetHashCode()
       => _value.GetHashCode();
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Deconstruct(out float x, out float y)
       => (x, y) = (X, Y);
 

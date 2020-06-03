@@ -28,6 +28,7 @@ namespace Fizix {
       return Sse.Shuffle(min, max, 0b11_10_01_00);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Unioned(in Vector128<float> a, in Vector128<float> b)
       => Sse.IsSupported
         ? UnionedSse(a, b)

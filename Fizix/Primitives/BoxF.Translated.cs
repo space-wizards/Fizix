@@ -22,6 +22,7 @@ namespace Fizix {
       return Sse.Add(r, sizeVec);
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> Translated(in Vector128<float> r, in Vector64<float> p)
       => Sse.IsSupported
         ? TranslatedSse(r, p)

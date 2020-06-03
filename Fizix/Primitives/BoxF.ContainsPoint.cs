@@ -29,6 +29,7 @@ namespace Fizix {
       return Sse.MoveMask(oob) == 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ContainsPoint(in Vector128<float> r, in Vector64<float> p)
       => Sse.IsSupported
         ? ContainsPointSse(r, p)
