@@ -29,7 +29,7 @@ namespace Fizix {
 
       public Proxy Parent {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => new Proxy(Int32.MaxValue);
+        get => new Proxy(int.MaxValue);
       }
 
       public int Height {

@@ -22,7 +22,7 @@ namespace Fizix {
 
       private static Proxy Free {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => new Proxy(UInt32.MaxValue);
+        get => new Proxy(uint.MaxValue);
       }
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
