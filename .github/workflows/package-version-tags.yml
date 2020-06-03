@@ -1,0 +1,44 @@
+name: Package Version Tags
+on:
+  push:
+    tags:
+    - '*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+        source-url: https://nuget.pkg.github.com/space-wizards/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - name: Install dependencies
+      run: dotnet restore
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - name: Build & Pack Library
+      run: dotnet pack -c Release
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - name: Build & Pack Tool
+      run: dotnet pack -c Release -p:IsTool=true
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - name: Pack
+      run: dotnet pack -c Release --no-build --include-symbols
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - name: Push Nupkg
+      run: dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate Fizix/nupkg/*.nupkg
+      env:
+        DOTNET_NOLOGO: 1
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
