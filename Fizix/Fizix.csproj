@@ -43,6 +43,13 @@
     </Choose>
 
     <ItemGroup>
+        <Compile Update="**\*.*.cs">
+            <WouldDependOn>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)', '^(.*?)\..*$', '$1.cs'))</WouldDependOn>
+            <DependentUpon Condition="'%(DependentUpon)' == '' And '%(WouldDependOn)' != '%(Filename)'">%(WouldDependOn)</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
         <None Remove="*.csproj.*" />
     </ItemGroup>
 
