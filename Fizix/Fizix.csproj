@@ -8,7 +8,7 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/space-wizards/Fizix.git</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>0.1.0</Version>
+        <Version>0.1.1</Version>
         <Copyright>Copyright © 2020 Tyler Young</Copyright>
         <Authors>Tyler Young</Authors>
         <Company />
