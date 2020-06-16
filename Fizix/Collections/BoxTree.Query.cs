@@ -109,7 +109,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
-    public bool Query(RayQueryCallbackDelegate callback, Vector2 start, Vector2 dir, bool approx = false) {
+    public bool Query(RayQueryCallbackDelegate callback, PointF start, Vector2 dir, bool approx = false) {
       var stack = new Stack<Proxy>(256);
 
       stack.Push(Root);

@@ -23,7 +23,12 @@ namespace Fizix {
       CollisionMask = collisionMask;
     }
 
-    public Vector2 Start {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public CollisionRayF(PointF start, Vector2 heading, T collisionMask)
+      : this(new RayF(start, heading), collisionMask) {
+    }
+
+    public PointF Start {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => Ray.Start;
     }

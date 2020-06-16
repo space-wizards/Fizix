@@ -8,7 +8,7 @@ namespace Fizix {
   [PublicAPI]
   public readonly partial struct RayF {
 
-    public Vector2 Start {
+    public PointF Start {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get;
     }
@@ -19,7 +19,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public RayF(Vector2 start, Vector2 heading) {
+    public RayF(PointF start, Vector2 heading) {
       Start = start;
       Heading = heading;
     }
