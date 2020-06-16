@@ -17,8 +17,11 @@ namespace Fizix {
       get;
     }
 
-    public CollisionRayF(in RayF ray, in T collisionMask)
-      => (Ray, CollisionMask) = (ray, collisionMask);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public CollisionRayF(in RayF ray, T collisionMask) {
+      Ray = ray;
+      CollisionMask = collisionMask;
+    }
 
     public Vector2 Start {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

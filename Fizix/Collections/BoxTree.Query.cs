@@ -8,7 +8,7 @@ namespace Fizix {
 
     public delegate bool QueryCallbackDelegate(ref T value);
 
-    public delegate bool RayQueryCallbackDelegate(ref T value, in Vector2 point, float distFromOrigin);
+    public delegate bool RayQueryCallbackDelegate(ref T value, PointF point, float distFromOrigin);
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
     public IEnumerable<T> Query(BoxF box, bool approx = false) {
@@ -61,7 +61,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
-    public IEnumerable<T> Query(Vector2 point, bool approx = false) {
+    public IEnumerable<T> Query(PointF point, bool approx = false) {
       var stack = new Stack<Proxy>(256);
 
       stack.Push(Root);
@@ -109,7 +109,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
-    public bool Query(RayQueryCallbackDelegate callback, in Vector2 start, in Vector2 dir, bool approx = false) {
+    public bool Query(RayQueryCallbackDelegate callback, Vector2 start, Vector2 dir, bool approx = false) {
       var stack = new Stack<Proxy>(256);
 
       stack.Push(Root);

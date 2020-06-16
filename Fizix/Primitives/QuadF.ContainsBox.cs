@@ -8,17 +8,17 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ContainsBoxNaive(in QuadF q, in BoxF b) {
-      var (diffX, diffY) = q.Center - b.Center;
+      var diff = q.Center - b.Center;
       MathF.SinCos(q.Angle, out var sinTheta, out var cosTheta);
 
       PointF reoriented = (
-        MathF.FusedMultiplyAdd(diffX, cosTheta, diffY * -sinTheta),
-        MathF.FusedMultiplyAdd(diffX, sinTheta, diffY * cosTheta)
+        MathF.FusedMultiplyAdd(diff.X, cosTheta, diff.Y * -sinTheta),
+        MathF.FusedMultiplyAdd(diff.X, sinTheta, diff.Y * cosTheta)
       );
 
-      Vector2 qSize = q.Size;
+      var qSize = q.Size;
 
-      BoxF relBox = (-qSize, qSize);
+      var relBox = new BoxF(-qSize, qSize);
 
       var bSize = b.Size;
 

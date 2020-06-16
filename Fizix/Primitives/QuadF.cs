@@ -21,7 +21,7 @@ namespace Fizix {
       get;
     }
 
-    private QuadF(in PointF center, in SizeF size, float angle)
+    private QuadF(PointF center, SizeF size, float angle)
       => (Center, Size, Angle) = (center, size, angle);
 
     public float Width {
@@ -36,7 +36,7 @@ namespace Fizix {
 
     public BoxF Box {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => (Center - Size, Center + Size);
+      get => new BoxF(Center - Size, Center + Size);
     }
 
   }

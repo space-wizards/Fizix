@@ -9,7 +9,7 @@ namespace Fizix {
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector128<float> ScaledNaive(in Vector128<float> vr, float scale) {
+    private static Vector128<float> ScaledNaive(Vector128<float> vr, float scale) {
       ref var r = ref Unsafe.As<Vector128<float>, Vector4>(ref Unsafe.AsRef(vr));
       var w = r.Z - r.X;
       var h = r.W - r.Y;
@@ -22,7 +22,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector128<float> ScaledSse3(in Vector128<float> r, float scale) {
+    private static Vector128<float> ScaledSse3(Vector128<float> r, float scale) {
       var half = Vector128.Create(.5f);
       var halfScale = Vector128.Create(scale);
       halfScale = Sse.Multiply(halfScale, half);
@@ -42,7 +42,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Scaled(in Vector128<float> r, float p)
+    public static Vector128<float> Scaled(Vector128<float> r, float p)
       => Sse3.IsSupported
         ? ScaledSse3(r, p)
         : ScaledNaive(r, p);

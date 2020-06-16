@@ -2,108 +2,112 @@ using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 using JetBrains.Annotations;
 
 namespace Fizix {
 
   [PublicAPI]
-  public readonly struct SizeF : IEquatable<SizeF> {
+  public readonly partial struct SizeF : IEquatable<SizeF> {
 
 #pragma warning disable 169, 649
-    private readonly Vector2 _value;
+    private readonly float _width, _height;
 #pragma warning restore 169, 649
 
     public float Width {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => _value.X;
+      get => _width;
     }
 
     public float Height {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => _value.Y;
+      get => _height;
     }
-    
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static SizeF operator -(SizeF p)
+      => Negate(p);
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator SizeF(in Vector128<float> v)
+      => new SizeF(
+        v.ToScalar(),
+        v.GetElement(1)
+      );
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator Vector128<float>(in SizeF v) {
+      var x = Vector128.CreateScalarUnsafe(v.Width);
+      if (!Sse.IsSupported)
+        return x.WithElement(1, v.Height);
+
+      var y = Vector128.CreateScalarUnsafe(v.Height);
+      return Sse.UnpackLow(x, y);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator ValueTuple<float, float>(in SizeF v)
-      => Unsafe.As<SizeF, ValueTuple<float, float>>(ref Unsafe.AsRef( v ));
+      => Unsafe.As<SizeF, ValueTuple<float, float>>(ref Unsafe.AsRef(v));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator SizeF(in ValueTuple<float, float> v)
-      => Unsafe.As<ValueTuple<float, float>, SizeF>(ref Unsafe.AsRef( v ));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator Vector64<float>(in SizeF v)
-      => Unsafe.As<SizeF, Vector64<float>>(ref Unsafe.AsRef( v ));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator SizeF(in Vector64<float> v)
-      => Unsafe.As<Vector64<float>, SizeF>(ref Unsafe.AsRef( v ));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator Vector2(in SizeF v)
-      => Unsafe.As<SizeF, Vector2>(ref Unsafe.AsRef( v ));
+      => Unsafe.As<ValueTuple<float, float>, SizeF>(ref Unsafe.AsRef(v));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator SizeF(in Vector2 v)
-      => Unsafe.As<Vector2, SizeF>(ref Unsafe.AsRef( v ));
+      => Unsafe.As<Vector2, SizeF>(ref Unsafe.AsRef(v));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static explicit operator Vector2(in SizeF v)
+      => Unsafe.As<SizeF, Vector2>(ref Unsafe.AsRef(v));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator SizeF(in PointF v)
-      => Unsafe.As<PointF, SizeF>(ref Unsafe.AsRef( v ));
+      => Unsafe.As<PointF, SizeF>(ref Unsafe.AsRef(v));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator PointF(in SizeF v)
-      => Unsafe.As<SizeF, PointF>(ref Unsafe.AsRef( v ));
+    public static SizeF operator +(SizeF p, SizeF v)
+      => Add(p, v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SizeF operator +(in SizeF p, in Vector2 v)
-      => Vector2.Add(p,v);
+    public static SizeF operator *(SizeF p, float v)
+      => Multiply(p, v);
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public SizeF(float width, float height) {
+      _width = width;
+      _height = height;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SizeF operator -(in SizeF p, in Vector2 v)
-      => Vector2.Subtract(p,v);
+    public static SizeF operator -(SizeF p, SizeF v)
+      => Subtract(p, v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SizeF operator +(in SizeF p, float v)
-      => Vector2.Add(p,  new Vector2(v));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SizeF operator -(in SizeF p, float v)
-      => Vector2.Subtract(p, new Vector2(v));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SizeF operator *(in SizeF p, float v)
-      => Vector2.Multiply(p, new Vector2(v));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SizeF operator /(in SizeF p, float v)
-      => Vector2.Divide(p, new Vector2(v));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(in SizeF a, in SizeF b)
+    public static bool operator ==(SizeF a, SizeF b)
       => a.Equals(b);
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(in SizeF a, in SizeF b)
-      => !a.Equals(b);
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Equals(in SizeF other)
-      => _value.Equals(other._value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    bool IEquatable<SizeF>.Equals(SizeF other)
-      => _value.Equals(other._value);
-    
+    public static bool operator !=(SizeF a, SizeF b)
+      => !a.Equals(b);
+
+    // ReSharper disable CompareOfFloatsByEqualityOperator
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Equals(SizeF other)
+      => Width == other.Width && Height == other.Height;
+
     public override bool Equals(object obj)
       => obj is SizeF other && Equals(other);
 
     public override int GetHashCode()
-      => _value.GetHashCode();
+      => HashCode.Combine(Width, Height);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Deconstruct(out float w, out float h)
-      => (w, h) = (Width, Height);
+    public void Deconstruct(out float x, out float y) {
+      x = Width;
+      y = Height;
+    }
 
   }
 

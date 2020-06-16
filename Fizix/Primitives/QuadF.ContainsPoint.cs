@@ -7,7 +7,7 @@ namespace Fizix {
   public readonly partial struct QuadF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ContainsPointNaive(in QuadF q, in PointF p) {
+    public static bool ContainsPointNaive(in QuadF q, PointF p) {
       var diff = q.Center - p;
       MathF.SinCos(q.Angle, out var sinTheta, out var cosTheta);
 
@@ -16,15 +16,15 @@ namespace Fizix {
         MathF.FusedMultiplyAdd(diff.X, sinTheta, diff.Y * cosTheta)
       );
 
-      Vector2 size = q.Size;
+      var size = q.Size;
 
-      BoxF relBox = (-size, size);
+      var relBox = new BoxF(-size, size);
 
       return relBox.Contains(reoriented);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ContainsPoint(in QuadF q, in PointF p) => ContainsPointNaive(q, p);
+    public static bool ContainsPoint(in QuadF q, PointF p) => ContainsPointNaive(q, p);
 
   }
 

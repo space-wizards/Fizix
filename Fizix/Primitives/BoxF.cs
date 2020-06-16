@@ -12,27 +12,59 @@ namespace Fizix {
   public readonly partial struct BoxF : IBoxF {
 
 #pragma warning disable 169, 649
-    private readonly Vector4 _value;
+    private readonly Vector128<float> _value;
+
+    public BoxF(float x1, float y1, float x2, float y2)
+      => _value = Vector128.Create(x1, y1, x2, y2);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public BoxF(PointF topLeft, PointF bottomRight) {
+      if (Sse.IsSupported) {
+        _value = Sse.MoveLowToHigh(topLeft, bottomRight);
+      }
+
+      _value = Vector128.Create(topLeft.X, topLeft.Y, bottomRight.X, bottomRight.Y);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public BoxF(PointF topLeft, SizeF widthHeight) {
+      if (Sse.IsSupported) {
+        _value = Sse.MoveLowToHigh(topLeft, Sse.Add(topLeft, widthHeight));
+      }
+
+      var (x, y) = topLeft + widthHeight;
+      _value = Vector128.Create(topLeft.X, topLeft.Y, x, y);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public BoxF(SizeF topLeft, SizeF bottomRight) {
+      if (Sse.IsSupported) {
+        _value = Sse.MoveLowToHigh(topLeft, bottomRight);
+      }
+
+      _value = Vector128.Create(topLeft.Width, topLeft.Height, bottomRight.Width, bottomRight.Height);
+    }
+
 #pragma warning restore 169, 649
 
     public float X1 {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => _value.X;
+      get => _value.GetElement(0);
     }
 
     public float Y1 {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => _value.Y;
+      get => _value.GetElement(1);
     }
 
     public float X2 {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => _value.Z;
+      get => _value.GetElement(2);
     }
 
     public float Y2 {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => _value.W;
+      get => _value.GetElement(3);
     }
 
     public float Top {
@@ -67,49 +99,22 @@ namespace Fizix {
 
     public PointF TopLeft {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get {
-        var v = (Vector128<float>) this;
-        return Unsafe.As<Vector128<float>,PointF>(ref v);
-      }
+      get => new PointF(X1, Y1);
     }
 
     public PointF BottomRight {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get {
-        var v = (Vector128<float>) this;
-        return Unsafe.Add( ref Unsafe.As<Vector128<float>,PointF>(ref v), 1);
-      }
+      get => new PointF(X2, Y2);
     }
 
     public PointF Center {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
-        var v = (Vector128<float>) this;
-        ref var tl = ref Unsafe.As<Vector128<float>,Vector2>(ref v);
-        ref var bl = ref Unsafe.Add( ref tl, 1);
-        return (tl + bl) / 2;
+        var tl = TopLeft;
+        var bl = BottomRight;
+        return (tl + bl) * .5f;
       }
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector64<float> GetSizeNaive(Vector128<float> vr) {
-      ref var r = ref Unsafe.As<Vector128<float>, BoxF>(ref Unsafe.AsRef(vr));
-      var v = (r.Width, r.Height);
-      return Unsafe.As<ValueTuple<float, float>, Vector64<float>>(ref v);
-    }
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector64<float> GetSizeSse(in Vector128<float> r)
-    {
-      var l = r;
-      var h = Sse.MoveHighToLow(l,l);
-      return Sse.Subtract(h,l).GetLower();
-    }
-
-    public static Vector64<float> GetSize(Vector128<float> r)
-      => Sse.IsSupported
-        ? GetSizeSse(r)
-        : GetSizeNaive(r);
 
     public SizeF Size {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -125,20 +130,20 @@ namespace Fizix {
       => Unsafe.As<ValueTuple<float, float, float, float>, BoxF>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator ValueTuple<Vector2,Vector2>(BoxF v)
-      => Unsafe.As<BoxF, ValueTuple<Vector2,Vector2>>(ref v);
+    public static explicit operator ValueTuple<Vector2, Vector2>(BoxF v)
+      => Unsafe.As<BoxF, ValueTuple<Vector2, Vector2>>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator BoxF(ValueTuple<Vector2,Vector2> v)
-      => Unsafe.As<ValueTuple<Vector2,Vector2>, BoxF>(ref v);
+    public static explicit operator BoxF(ValueTuple<Vector2, Vector2> v)
+      => Unsafe.As<ValueTuple<Vector2, Vector2>, BoxF>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ValueTuple<PointF,PointF>(BoxF v)
-      => Unsafe.As<BoxF, ValueTuple<PointF,PointF>>(ref v);
+    public static implicit operator ValueTuple<PointF, PointF>(BoxF v)
+      => Unsafe.As<BoxF, ValueTuple<PointF, PointF>>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator BoxF(ValueTuple<PointF,PointF> v)
-      => Unsafe.As<ValueTuple<PointF,PointF>, BoxF>(ref v);
+    public static implicit operator BoxF(ValueTuple<PointF, PointF> v)
+      => Unsafe.As<ValueTuple<PointF, PointF>, BoxF>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Vector128<float>(BoxF v)

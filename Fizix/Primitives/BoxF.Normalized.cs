@@ -9,8 +9,7 @@ namespace Fizix {
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector128<float> NormalizedNaive(in Vector128<float> vr) {
-      ref var r = ref Unsafe.As<Vector128<float>, BoxF>(ref Unsafe.AsRef(vr));
+    private static Vector128<float> NormalizedNaive(in BoxF r) {
       float
         x1 = r.X1,
         y1 = r.Y1,
@@ -24,7 +23,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector128<float> NormalizedSse(in Vector128<float> r) {
+    private static Vector128<float> NormalizedSse(Vector128<float> r) {
       var xy1 = Sse.MoveLowToHigh(r, r);
       var xy2 = Sse.MoveHighToLow(r, r);
       var min = Sse.Min(xy1, xy2);
@@ -33,7 +32,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Normalized(in Vector128<float> r)
+    public static Vector128<float> Normalized(Vector128<float> r)
       => Sse.IsSupported
         ? NormalizedSse(r)
         : NormalizedNaive(r);

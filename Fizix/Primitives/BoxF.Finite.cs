@@ -8,13 +8,11 @@ namespace Fizix {
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool FiniteNaive(in Vector128<float> vr) {
-      ref var r = ref Unsafe.As<Vector128<float>, BoxF>(ref Unsafe.AsRef(vr));
-      return float.IsFinite(MathF.FusedMultiplyAdd(r.X2, r.Y2, r.X1 * r.Y1));
-    }
+    private static bool FiniteNaive(in BoxF r)
+      => float.IsFinite(MathF.FusedMultiplyAdd(r.X2, r.Y2, r.X1 * r.Y1));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool FiniteSse(in Vector128<float> r) {
+    private static bool FiniteSse(in BoxF r) {
       var r1 = r;
       var r2 = Sse.Add(r1, Vector128.Create(1f));
       var r3 = Sse.Add(r2, r2);
@@ -24,7 +22,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Finite(in Vector128<float> r)
+    public static bool Finite(in BoxF r)
       => Sse.IsSupported
         ? FiniteSse(r)
         : FiniteNaive(r);

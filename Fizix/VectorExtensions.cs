@@ -24,10 +24,6 @@ namespace Fizix {
     public static ref Vector128<float> AsVector128Float(in this Vector4 a)
       => ref Unsafe.As<Vector4, Vector128<float>>(ref Unsafe.AsRef(a));
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> WidenToVector128(in this Vector64<float> a)
-      => Unsafe.As<Vector64<float>, Vector128<float>>(ref Unsafe.AsRef(a));
-
   }
 
 }

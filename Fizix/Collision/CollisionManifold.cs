@@ -15,7 +15,7 @@ namespace Fizix {
     public Vector2 Normal;
 
     public bool AlongFace;
-    
+
     public bool OnCorner {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => !AlongFace;
@@ -23,9 +23,16 @@ namespace Fizix {
       set => AlongFace = !value;
     }
 
+    public CollisionManifold(ContactPoint a, ContactPoint b, Vector2 normal, bool alongFace) {
+      ContactA = a;
+      ContactB = b;
+      Center = (Vector2) (ContactA.Point + ContactB.Point) * .5f;
+      Normal = normal;
+      AlongFace = alongFace;
+    }
+
   }
 
-  // TODO: not implemented
   [PublicAPI]
   public struct ContactPoint {
 

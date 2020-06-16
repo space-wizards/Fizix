@@ -412,7 +412,7 @@ namespace Fizix.Tests {
           Assert.True(dt.Add(i), $"Add {i}");
       });
 
-      PointF point = (0, 0);
+      var point = new PointF(0, 0);
 
       var containers = Enumerable.Range(0, Boxes1.Length)
         .Where(x => Boxes1[x].Contains(point))
@@ -448,7 +448,7 @@ namespace Fizix.Tests {
       for (var i = 0; i < count; ++i)
         boxes[i].Normalize();
 
-      var dt = new BoxTree<int>((in int x) => boxes[x], capacity: count / 2, growthFunc: x => x += count / 2);
+      var dt = new BoxTree<int>((in int x) => boxes[x], capacity: count / 2, growthFunc: x => x + count / 2);
 
       Assert.Multiple(() => {
         var sw = Stopwatch.StartNew();

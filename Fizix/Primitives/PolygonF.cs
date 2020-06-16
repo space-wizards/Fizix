@@ -11,7 +11,7 @@ namespace Fizix {
     public static PointF[] Create(params PointF[] path) => path;
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool ContainsPoint(this PointF[] poly, in PointF point) {
+    public static bool ContainsPoint(this PointF[] poly, PointF point) {
       var result = false;
       var j = poly.Length - 1;
       var pY = point.Y;
@@ -45,7 +45,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool TriContains(in PointF t, in PointF br, in PointF bl, in PointF point) {
+    public static bool TriContains(PointF t, PointF br, PointF bl, PointF point) {
       var result = false;
       var (pX,pY) = point;
       var (aX, aY) = t;
@@ -74,7 +74,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool QuadContains(in PointF tl, in PointF tr, in PointF br, in PointF bl, in PointF point) {
+    public static bool QuadContains(PointF tl, PointF tr, PointF br, PointF bl, PointF point) {
       var result = false;
       var (pX,pY) = point;
       var (aX, aY) = tl;

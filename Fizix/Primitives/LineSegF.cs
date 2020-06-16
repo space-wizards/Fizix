@@ -7,7 +7,7 @@ namespace Fizix {
   [PublicAPI]
   public static class LineSegF {
 
-    public static bool Intersection(in PointF aStart, in PointF aEnd, in PointF bStart, in PointF bEnd, out PointF intersection) {
+    public static bool Intersection(PointF aStart, PointF aEnd, PointF bStart, PointF bEnd, out PointF intersection) {
       Vector2 aSize = aEnd - aStart, bSize = bEnd - bStart;
 
       var cross = aSize.X * bSize.Y - aSize.Y * bSize.X;

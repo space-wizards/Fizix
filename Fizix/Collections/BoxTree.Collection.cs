@@ -81,7 +81,7 @@ namespace Fizix {
       if (leafNode.Box.Contains(newBox))
         return false;
 
-      var movedDist = newBox.Center - leafNode.Box.Center;
+      SizeF movedDist = newBox.Center - leafNode.Box.Center;
 
       var fattenedNewBox = newBox.Grow(BoxNodeGrowth);
 

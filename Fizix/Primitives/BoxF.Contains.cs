@@ -7,18 +7,14 @@ namespace Fizix {
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool ContainsRectNaive(in Vector128<float> va, in Vector128<float> vb) {
-      ref var a = ref Unsafe.As<Vector128<float>, BoxF>(ref Unsafe.AsRef(va));
-      ref var b = ref Unsafe.As<Vector128<float>, BoxF>(ref Unsafe.AsRef(vb));
-      return
-        b.Left >= a.Left
+    internal static bool ContainsRectNaive(in BoxF a, in BoxF b)
+      => b.Left >= a.Left
         && b.Right <= a.Right
         && b.Top >= a.Top
         && b.Bottom <= a.Bottom;
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool ContainsRectSse(in Vector128<float> a, in Vector128<float> b) {
+    internal static bool ContainsRectSse(in BoxF a, in BoxF b) {
       var aMin = Sse.MoveLowToHigh(a, a);
       var aMax = Sse.MoveHighToLow(a, a);
       var bMin = Sse.MoveLowToHigh(b, b);
@@ -30,7 +26,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ContainsRect(in Vector128<float> a, in Vector128<float> b)
+    public static bool ContainsRect(in BoxF a, in BoxF b)
       => Sse.IsSupported
         ? ContainsRectSse(a, b)
         : ContainsRectNaive(a, b);

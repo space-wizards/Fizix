@@ -1,25 +1,27 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-using CannyFastMath;
 
 namespace Fizix {
 
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool HasNaNNaive(in BoxF r)
-      => float.IsNaN(MathF.FusedMultiplyAdd(r.X1, r.Y1, r.X2 * r.Y2));
+    private static SizeF GetSizeNaive(in BoxF r)
+      => new SizeF(r.Width, r.Height);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool HasNaNSse(in BoxF r)
-      => Sse.MoveMask(Sse.CompareUnordered(r, default)) != 0;
+    private static SizeF GetSizeSse(Vector128<float> r) {
+      var l = r;
+      var h = Sse.MoveHighToLow(l, l);
+      return Sse.Subtract(h, l);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ContainsNaN(in BoxF r)
+    public static SizeF GetSize(BoxF r)
       => Sse.IsSupported
-        ? HasNaNSse(r)
-        : HasNaNNaive(r);
+        ? GetSizeSse(r)
+        : GetSizeNaive(r);
 
   }
 
