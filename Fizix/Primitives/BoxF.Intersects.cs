@@ -7,15 +7,11 @@ namespace Fizix {
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool IsIntersectingNaive(Vector128<float> va, Vector128<float> vb) {
-      ref var a = ref Unsafe.As<Vector128<float>, BoxF>(ref Unsafe.AsRef(va));
-      ref var b = ref Unsafe.As<Vector128<float>, BoxF>(ref Unsafe.AsRef(vb));
-      return
-        b.Left <= a.Right
+    internal static bool IsIntersectingNaive(BoxF a, BoxF b)
+      => b.Left <= a.Right
         && b.Right >= a.Left
         && b.Top <= a.Bottom
         && b.Bottom >= a.Top;
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool IsIntersectingSse(Vector128<float> a, Vector128<float> b) {

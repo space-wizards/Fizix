@@ -13,14 +13,14 @@ namespace Fizix {
       q.GetCorners(out var qTl, out var qBr, out var qTr, out var qBl);
       o.GetCorners(out var oTl, out var oBr, out var oTr, out var oBl);
 
-      BoxF bQ = (
+      var bQ = new BoxF(
         MathF.Min(MathF.Min(qTl.X, qBr.X), MathF.Min(qTr.X, qBl.X)),
         MathF.Min(MathF.Min(qTl.Y, qBr.Y), MathF.Min(qTr.Y, qBl.Y)),
         MathF.Max(MathF.Max(qTl.X, qBr.X), MathF.Max(qTr.X, qBl.X)),
         MathF.Max(MathF.Max(qTl.Y, qBr.Y), MathF.Max(qTr.X, qBl.Y))
       );
 
-      BoxF bO = (
+      var bO = new BoxF(
         MathF.Min(MathF.Min(oTl.X, oBr.X), MathF.Min(oTr.X, oBl.X)),
         MathF.Min(MathF.Min(oTl.Y, oBr.Y), MathF.Min(oTr.Y, oBl.Y)),
         MathF.Max(MathF.Max(oTl.X, oBr.X), MathF.Max(oTr.X, oBl.X)),

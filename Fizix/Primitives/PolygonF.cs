@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using CannyFastMath;
@@ -8,10 +9,10 @@ namespace Fizix {
   public static class PolygonF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static PointF[] Create(params PointF[] path) => path;
+    public static Vector2[] Create(params Vector2[] path) => path;
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool ContainsPoint(this PointF[] poly, PointF point) {
+    public static bool ContainsPoint(this Vector2[] poly, Vector2 point) {
       var result = false;
       var j = poly.Length - 1;
       var pY = point.Y;
@@ -34,7 +35,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this PointF[] poly, params PointF[] other) {
+    public static bool Contains(this Vector2[] poly, params Vector2[] other) {
       for (var i = 0; i < other.Length; ++i) {
         ref var point = ref other[i];
         if (!poly.ContainsPoint(point))
@@ -45,7 +46,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool TriContains(PointF t, PointF br, PointF bl, PointF point) {
+    public static bool TriContains(Vector2 t, Vector2 br, Vector2 bl, Vector2 point) {
       var result = false;
       var (pX,pY) = point;
       var (aX, aY) = t;
@@ -70,11 +71,11 @@ namespace Fizix {
         < pX)
         result = !result;
       
-      return true;
+      return result;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool QuadContains(PointF tl, PointF tr, PointF br, PointF bl, PointF point) {
+    public static bool QuadContains(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl, Vector2 point) {
       var result = false;
       var (pX,pY) = point;
       var (aX, aY) = tl;
@@ -106,7 +107,7 @@ namespace Fizix {
         < pX)
         result = !result;
       
-      return true;
+      return result;
     }
 
   }

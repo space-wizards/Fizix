@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -6,7 +7,7 @@ namespace Fizix {
   public static class QuadFExtensions {
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this QuadF q, PointF p)
+    public static bool Contains(this QuadF q, Vector2 p)
       => QuadF.ContainsPoint(q, p);
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -18,7 +19,7 @@ namespace Fizix {
       => QuadF.ContainsQuad(q, other);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void GetCorners(this QuadF q, out PointF tl, out PointF br, out PointF tr, out PointF bl)
+    public static void GetCorners(this QuadF q, out Vector2 tl, out Vector2 br, out Vector2 tr, out Vector2 bl)
       => QuadF.Corners(q, out tl, out br, out tr, out bl);
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

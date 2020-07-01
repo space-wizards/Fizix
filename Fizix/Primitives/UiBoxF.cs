@@ -5,7 +5,7 @@ using System.Runtime.Intrinsics;
 
 namespace Fizix {
 
-  public struct UiBoxF : IBoxF {
+  public struct UiBoxF {
 
 #pragma warning disable 649
     private BoxF _box;
@@ -61,49 +61,35 @@ namespace Fizix {
       get => _box.Height;
     }
 
-    public PointF BottomLeft {
+    public Vector2 BottomLeft {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.TopLeft;
     }
 
-    public PointF TopRight {
+    public Vector2 TopRight {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.BottomRight;
     }
 
-    public PointF Center {
+    public Vector2 Center {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.Center;
     }
 
-    public SizeF Size {
+    public Vector2 Size {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.Size;
     }
+    
+    /*
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator BoxF(UiBoxF v)
+      => Unsafe.As<UiBoxF, BoxF>(ref v);
+    */
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ValueTuple<float, float, float, float>(UiBoxF v)
-      => Unsafe.As<UiBoxF, ValueTuple<float, float, float, float>>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator UiBoxF(ValueTuple<float, float, float, float> v)
-      => Unsafe.As<ValueTuple<float, float, float, float>, UiBoxF>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator ValueTuple<Vector2,Vector2>(UiBoxF v)
-      => Unsafe.As<UiBoxF, ValueTuple<Vector2,Vector2>>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator UiBoxF(ValueTuple<Vector2,Vector2> v)
-      => Unsafe.As<ValueTuple<Vector2,Vector2>, UiBoxF>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ValueTuple<PointF,PointF>(UiBoxF v)
-      => Unsafe.As<UiBoxF, ValueTuple<PointF,PointF>>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator UiBoxF(ValueTuple<PointF,PointF> v)
-      => Unsafe.As<ValueTuple<PointF,PointF>, UiBoxF>(ref v);
+    public static explicit operator UiBoxF(BoxF v)
+      => Unsafe.As<BoxF, UiBoxF>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Vector128<float>(UiBoxF v)
@@ -114,15 +100,12 @@ namespace Fizix {
       => Unsafe.As<Vector128<float>, UiBoxF>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator BoxF(UiBoxF v)
-      => Unsafe.As<UiBoxF, BoxF>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator UiBoxF(Vector4 v)
       => Unsafe.As<Vector4, UiBoxF>(ref v);
 
     public override string ToString()
       => $"(B{Bottom}, L{Left}, T{Top}, R{Right})";
+
   }
 
 }

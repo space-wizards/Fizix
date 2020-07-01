@@ -7,7 +7,7 @@ namespace Fizix {
   [PublicAPI]
   public static class LineSegF {
 
-    public static bool Intersection(PointF aStart, PointF aEnd, PointF bStart, PointF bEnd, out PointF intersection) {
+    public static bool Intersection(Vector2 aStart, Vector2 aEnd, Vector2 bStart, Vector2 bEnd, out Vector2 intersection) {
       Vector2 aSize = aEnd - aStart, bSize = bEnd - bStart;
 
       var cross = aSize.X * bSize.Y - aSize.Y * bSize.X;
@@ -20,7 +20,7 @@ namespace Fizix {
 
       var crossReciprocal = 1.0f / cross;
 
-      Vector2 distStart = bStart - aStart;
+      var distStart = bStart - aStart;
 
       var negDistStartY = -distStart.Y;
 

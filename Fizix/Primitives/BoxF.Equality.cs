@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Runtime.CompilerServices;
 
 namespace Fizix {
@@ -23,7 +22,7 @@ namespace Fizix {
         : 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
       => obj is BoxF other && Equals(other);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

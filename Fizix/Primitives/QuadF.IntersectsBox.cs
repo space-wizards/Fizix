@@ -11,7 +11,7 @@ namespace Fizix {
       var diff = q.Center - b.Center;
       MathF.SinCos(q.Angle, out var sinTheta, out var cosTheta);
 
-      PointF reoriented = (
+      var reoriented = new Vector2(
         MathF.FusedMultiplyAdd(diff.X, cosTheta, diff.Y * -sinTheta),
         MathF.FusedMultiplyAdd(diff.X, sinTheta, diff.Y * cosTheta)
       );
@@ -22,7 +22,7 @@ namespace Fizix {
 
       var bSize = b.Size;
 
-      BoxF relOtherBox = (reoriented - bSize, reoriented + bSize);
+      var relOtherBox = new BoxF(reoriented - bSize, reoriented + bSize);
 
       return relBox.Intersects(relOtherBox);
     }

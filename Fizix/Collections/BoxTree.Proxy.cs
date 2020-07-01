@@ -61,7 +61,7 @@ namespace Fizix {
         => _value.CompareTo(other._value);
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public override bool Equals(object obj)
+      public override bool Equals(object? obj)
         => obj is Proxy other && Equals(other);
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

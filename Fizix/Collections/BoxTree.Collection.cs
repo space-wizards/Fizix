@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace Fizix {
@@ -16,45 +17,66 @@ namespace Fizix {
       => Add(item);
 
     public bool Add(in T item) {
-      if (TryGetProxy(item, out var proxy))
-        return false;
+      EnterUpgradeableReadLock();
+      try {
+        if (TryGetProxy(item, out var proxy)) {
+          return false;
+        }
 
-      var box = _extractBox(item);
+        EnterWriteLock();
+        try {
+          var box = _extractBox(item);
 
-      proxy = AllocateLeaf();
+          proxy = AllocateLeaf();
 
-      ref var leaf = ref GetLeaf(proxy);
-      Assert(!leaf.IsFree);
-      leaf.Box = box.Grow(BoxNodeGrowth);
-      leaf.Item = item;
+          ref var leaf = ref GetLeaf(proxy);
+          Assert(!leaf.IsFree);
+          leaf.Box = box.Grow(BoxNodeGrowth);
+          leaf.Item = item;
 
-      var leafIndex = proxy.LeafIndex;
+          var leafIndex = proxy.LeafIndex;
 
-      InsertLeaf(leafIndex);
+          InsertLeaf(leafIndex);
 
-      _leafLookup[item] = leafIndex;
+          _leafLookup[item] = leafIndex;
 
-      Assert(Contains(item));
+          Assert(Contains(item));
 #if DEBUG
-      var itemCopy = item;
-      Assert(this.Any(x => Equals(x, itemCopy)));
-      var parent = leaf.Parent;
-      if (!box.HasNaN()) {
-        Assert(parent == Root || !parent.IsFree);
-        Assert(Equals(leaf.Item, item));
-      }
+          // ReSharper disable RedundantAssignment
+          var itemCopy = item;
+          Assert(this.Any(x => Equals(x, itemCopy)));
+          var parent = leaf.Parent;
+          if (!box.HasNaN()) {
+            Assert(parent == Root || !parent.IsFree);
+            Assert(Equals(leaf.Item, item));
+          }
+          // ReSharper restore RedundantAssignment
 #endif
+        }
+        finally {
+          ExitWriteLock();
+        }
+      }
+      finally {
+        ExitUpgradeableReadLock();
+      }
 
       return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Remove(in T item) {
-      if (!_leafLookup.Remove(item, out var leafIndex))
-        return false;
+      EnterWriteLock();
+      try {
+        if (!_leafLookup.Remove(item, out var leafIndex))
+          return false;
 
-      DestroyLeaf(leafIndex);
-      return true;
+        DestroyLeaf(leafIndex);
+        return true;
+      }
+      finally {
+        ExitWriteLock();
+      }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63,46 +85,62 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
     public bool Update(in T item) {
-      if (!TryGetProxy(item, out int leafIndex))
-        return false;
+      EnterUpgradeableReadLock();
+      try {
+        if (!TryGetProxy(item, out int leafIndex))
+          return false;
 
-      Assert(Contains(item));
+        Assert(Contains(item));
 #if DEBUG
-      var itemCopy = item;
-      Assert(this.Any(x => Equals(x, itemCopy)));
+        // ReSharper disable RedundantAssignment
+        var itemCopy = item;
+        Assert(this.Any(x => Equals(x, itemCopy)));
+        // ReSharper restore RedundantAssignment
 #endif
 
-      ref var leafNode = ref GetLeaf(leafIndex);
+        ref var leafNode = ref GetLeaf(leafIndex);
 
-      Assert(Equals(leafNode.Item, item));
+        Assert(Equals(leafNode.Item, item));
 
-      var newBox = _extractBox(item);
+        var newBox = _extractBox(item);
 
-      if (leafNode.Box.Contains(newBox))
-        return false;
+        if (leafNode.Box.Contains(newBox))
+          return false;
 
-      SizeF movedDist = newBox.Center - leafNode.Box.Center;
+        EnterWriteLock();
+        try {
+          Vector2 movedDist = newBox.Center - leafNode.Box.Center;
 
-      var fattenedNewBox = newBox.Grow(BoxNodeGrowth);
+          var fattenedNewBox = newBox.Grow(BoxNodeGrowth);
 
-      fattenedNewBox = newBox.Union(fattenedNewBox.Translate(movedDist));
+          fattenedNewBox = newBox.Union(fattenedNewBox.Translate(movedDist));
 
-      Assert(fattenedNewBox.Contains(newBox));
+          Assert(fattenedNewBox.Contains(newBox));
 
-      RemoveLeaf(leafIndex);
+          RemoveLeaf(leafIndex);
 
-      leafNode.Box = fattenedNewBox;
+          leafNode.Box = fattenedNewBox;
 
-      InsertLeaf(leafIndex);
+          InsertLeaf(leafIndex);
 
-      Assert(Contains(item));
+          Assert(Contains(item));
 #if DEBUG
-      Assert(this.Any(x => Equals(x, itemCopy)));
-      var parent = GetLeaf(leafIndex).Parent;
-      Assert(parent == Root || !parent.IsFree);
+          // ReSharper disable RedundantAssignment
+          Assert(this.Any(x => Equals(x, itemCopy)));
+          var parent = GetLeaf(leafIndex).Parent;
+          Assert(parent == Root || !parent.IsFree);
+          // ReSharper restore RedundantAssignment
 #endif
 
-      return true;
+          return true;
+        }
+        finally {
+          ExitWriteLock();
+        }
+      }
+      finally {
+        ExitUpgradeableReadLock();
+      }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -124,10 +162,16 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerator<T> GetEnumerator() {
-      foreach (var leaf in _leaves) {
-        if (leaf.IsFree) continue;
+      EnterReadLock();
+      try {
+        foreach (var leaf in _leaves) {
+          if (leaf.IsFree) continue;
 
-        yield return leaf.Item;
+          yield return leaf.Item;
+        }
+      }
+      finally {
+        ExitReadLock();
       }
     }
 
@@ -135,8 +179,15 @@ namespace Fizix {
     IEnumerator IEnumerable.GetEnumerator()
       => GetEnumerator();
 
-    public void CopyTo(T[] array, int arrayIndex)
-      => _leafLookup.Keys.CopyTo(array, arrayIndex);
+    public void CopyTo(T[] array, int arrayIndex) {
+      EnterReadLock();
+      try {
+        _leafLookup.Keys.CopyTo(array, arrayIndex);
+      }
+      finally {
+        ExitReadLock();
+      }
+    }
 
     public int BranchCount {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

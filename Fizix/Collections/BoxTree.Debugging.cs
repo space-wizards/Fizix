@@ -11,7 +11,7 @@ namespace Fizix {
     [Conditional("DEBUG_DYNAMIC_TREE_ASSERTS")]
     [DebuggerNonUserCode] [DebuggerHidden] [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Assert(bool assertion, [CallerMemberName] string member = default, [CallerFilePath] string file = default, [CallerLineNumber] int line = default) {
+    public static void Assert(bool assertion, [CallerMemberName] string? member = default, [CallerFilePath] string? file = default, [CallerLineNumber] int line = default) {
       if (assertion) return;
 
       var msg = $"Assertion failure in {member} ({file}:{line})";
@@ -56,6 +56,7 @@ namespace Fizix {
   }
 
   [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "}")]
+  // ReSharper disable once UnusedTypeParameter
   public sealed partial class BoxTree<T> {
 
     public string DebuggerDisplay

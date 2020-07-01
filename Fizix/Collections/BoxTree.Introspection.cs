@@ -32,16 +32,30 @@ namespace Fizix {
       => _leafLookup.TryGetValue(item, out leafIndex);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BoxF? GetBox(T item)
-      => TryGetProxy(item, out int leafIndex)
-        ? GetLeaf(leafIndex).Box
-        : (BoxF?) null;
+    public BoxF? GetBox(T item) {
+      EnterReadLock();
+      try {
+        return TryGetProxy(item, out int leafIndex)
+          ? GetLeaf(leafIndex).Box
+          : (BoxF?) null;
+      }
+      finally {
+        ExitReadLock();
+      }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BoxF? GetBox(in T item)
-      => TryGetProxy(item, out int leafIndex)
-        ? GetLeaf(leafIndex).Box
-        : (BoxF?) null;
+    public BoxF? GetBox(in T item) {
+      EnterReadLock();
+      try {
+        return TryGetProxy(item, out int leafIndex)
+          ? GetLeaf(leafIndex).Box
+          : (BoxF?) null;
+      }
+      finally {
+        ExitReadLock();
+      }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ref BoxF GetBox(ref Leaf item)

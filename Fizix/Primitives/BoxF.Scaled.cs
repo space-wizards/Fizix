@@ -9,20 +9,18 @@ namespace Fizix {
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector128<float> ScaledNaive(Vector128<float> vr, float scale) {
-      ref var r = ref Unsafe.As<Vector128<float>, Vector4>(ref Unsafe.AsRef(vr));
+    private static BoxF ScaledNaive(Vector4 r, float scale) {
       var w = r.Z - r.X;
       var h = r.W - r.Y;
       var hv = new Vector2(w, h) * (scale * .5f);
       var tl = new Vector2(r.X, r.Y);
       var br = new Vector2(r.Z, r.W);
       var c = (tl + br) * .5f;
-      var result = (c - hv, c + hv);
-      return Unsafe.As<ValueTuple<Vector2, Vector2>, Vector128<float>>(ref result);
+      return new BoxF(c - hv, c + hv);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector128<float> ScaledSse3(Vector128<float> r, float scale) {
+    private static BoxF ScaledSse3(Vector128<float> r, float scale) {
       var half = Vector128.Create(.5f);
       var halfScale = Vector128.Create(scale);
       halfScale = Sse.Multiply(halfScale, half);
@@ -42,7 +40,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Scaled(Vector128<float> r, float p)
+    public static BoxF Scaled(BoxF r, float p)
       => Sse3.IsSupported
         ? ScaledSse3(r, p)
         : ScaledNaive(r, p);

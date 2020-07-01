@@ -24,11 +24,11 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public CollisionRayF(PointF start, Vector2 heading, T collisionMask)
+    public CollisionRayF(Vector2 start, Vector2 heading, T collisionMask)
       : this(new RayF(start, heading), collisionMask) {
     }
 
-    public PointF Start {
+    public Vector2 Start {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => Ray.Start;
     }
@@ -39,7 +39,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Intersects(in CollisionBoxF<T> box, out float distance, out PointF location)
+    public bool Intersects(in CollisionBoxF<T> box, out float distance, out Vector2 location)
       => Ray.Intersects(box, out distance, out location);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

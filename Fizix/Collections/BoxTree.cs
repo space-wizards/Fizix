@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using JetBrains.Annotations;
 using Math = CannyFastMath.Math;
 
@@ -35,20 +36,36 @@ namespace Fizix {
 
     protected readonly Func<int, int> GrowthFunc;
 
-    protected BoxTree(float boxNodeGrowth = 1, Func<int, int> growthFunc = null) {
+    private readonly ReaderWriterLockSlim? _lock;
+
+    protected BoxTree(float boxNodeGrowth = 1, Func<int, int>? growthFunc = null, bool locking = false) {
       BoxNodeGrowth = boxNodeGrowth;
       GrowthFunc = growthFunc ?? DefaultGrowthFunc;
+      if (locking)
+        _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
     }
 
     // box2d grows by *2, here we're being somewhat more linear
     private static int DefaultGrowthFunc(int x)
       => x + 256;
 
+    protected void EnterReadLock() => _lock?.EnterReadLock();
+
+    protected void ExitReadLock() => _lock?.ExitReadLock();
+
+    protected void EnterUpgradeableReadLock() => _lock?.EnterUpgradeableReadLock();
+
+    protected void ExitUpgradeableReadLock() => _lock?.ExitUpgradeableReadLock();
+
+    protected void EnterWriteLock() => _lock?.EnterWriteLock();
+
+    protected void ExitWriteLock() => _lock?.ExitWriteLock();
+
   }
 
   [PublicAPI]
   public sealed partial class BoxTree<T>
-    : BoxTree, ICollection<T> {
+    : BoxTree, ICollection<T> where T : notnull {
 
     public delegate BoxF ExtractBoxDelegate(in T value);
 
@@ -75,8 +92,8 @@ namespace Fizix {
       }
     }
 
-    public BoxTree(ExtractBoxDelegate extractBoxFunc, IEqualityComparer<T> comparer = null, float boxNodeGrowth = 1f / 32, int capacity = 256, Func<int, int> growthFunc = null)
-      : base(boxNodeGrowth, growthFunc) {
+    public BoxTree(ExtractBoxDelegate extractBoxFunc, IEqualityComparer<T>? comparer = null, float boxNodeGrowth = 1f / 32, int capacity = 256, Func<int, int>? growthFunc = null, bool locking = false)
+      : base(boxNodeGrowth, growthFunc, locking) {
       _extractBox = extractBoxFunc;
       _equalityComparer = comparer ?? EqualityComparer<T>.Default;
       capacity = Math.Max(MinimumCapacity, capacity);
@@ -92,39 +109,51 @@ namespace Fizix {
     }
 
     private void ResetLeaves() {
-      var ll = LeafCapacity - 1;
-      for (var i = 0; i < ll; ++i) {
-        ref var leaf = ref _leaves[i];
-        leaf.Parent = new Proxy(i + 1, true);
-        leaf.IsFree = true;
+      EnterWriteLock();
+      try {
+        var ll = LeafCapacity - 1;
+        for (var i = 0; i < ll; ++i) {
+          ref var leaf = ref _leaves[i];
+          leaf.Parent = new Proxy(i + 1, true);
+          leaf.IsFree = true;
+        }
+
+        ref var lastLeaf = ref _leaves[ll];
+
+        lastLeaf.Parent.Free();
+        lastLeaf.IsFree = true;
+
+        FreeLeaves = new Proxy(0, true);
+        ValidateFreeLeaves();
       }
-
-      ref var lastLeaf = ref _leaves[ll];
-
-      lastLeaf.Parent.Free();
-      lastLeaf.IsFree = true;
-
-      FreeLeaves = new Proxy(0, true);
-      ValidateFreeLeaves();
+      finally {
+        ExitWriteLock();
+      }
     }
 
     private void ResetBranches() {
-      var lb = BranchCapacity - 1;
-      for (var i = 0; i < lb; ++i) {
-        ref var branch = ref _branches[i];
-        branch.Parent = (Proxy) (i + 1);
-        branch.IsFree = true;
-        branch.Height = 0;
+      EnterWriteLock();
+      try {
+        var lb = BranchCapacity - 1;
+        for (var i = 0; i < lb; ++i) {
+          ref var branch = ref _branches[i];
+          branch.Parent = (Proxy) (i + 1);
+          branch.IsFree = true;
+          branch.Height = 0;
+        }
+
+        ref var lastBranch = ref _branches[lb];
+
+        lastBranch.Parent.Free();
+        lastBranch.IsFree = true;
+        lastBranch.Height = 0;
+
+        FreeBranches = new Proxy(0);
+        ValidateFreeBranches();
       }
-
-      ref var lastBranch = ref _branches[lb];
-
-      lastBranch.Parent.Free();
-      lastBranch.IsFree = true;
-      lastBranch.Height = 0;
-
-      FreeBranches = new Proxy(0);
-      ValidateFreeBranches();
+      finally {
+        ExitWriteLock();
+      }
     }
 
     private Proxy FreeBranches {
@@ -162,17 +191,23 @@ namespace Fizix {
     }
 
     public void Clear() {
-      var branchCapacity = BranchCapacity;
-      var leafCapacity = LeafCapacity;
+      EnterWriteLock();
+      try {
+        var branchCapacity = BranchCapacity;
+        var leafCapacity = LeafCapacity;
 
-      BranchCount = 0;
-      _leaves = new Leaf[leafCapacity];
-      _branches = new Branch[branchCapacity];
-      _leafLookup = new Dictionary<T, int>(leafCapacity);
-      Root.Free();
+        BranchCount = 0;
+        _leaves = new Leaf[leafCapacity];
+        _branches = new Branch[branchCapacity];
+        _leafLookup = new Dictionary<T, int>(leafCapacity);
+        Root.Free();
 
-      ResetBranches();
-      ResetLeaves();
+        ResetBranches();
+        ResetLeaves();
+      }
+      finally {
+        ExitWriteLock();
+      }
     }
 
   }

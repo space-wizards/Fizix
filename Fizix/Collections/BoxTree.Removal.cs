@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace Fizix {
 
+  // ReSharper disable once UnusedTypeParameter
   public sealed partial class BoxTree<T> {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

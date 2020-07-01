@@ -1,7 +1,5 @@
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 namespace Fizix {
@@ -12,7 +10,7 @@ namespace Fizix {
     internal static BoxF OverlapNaive(in BoxF a, in BoxF b)
       => new BoxF(
         Vector2.Min((Vector2) a.TopLeft, (Vector2) b.TopLeft),
-        (PointF) Vector2.Max((Vector2) a.BottomRight, (Vector2) b.BottomRight)
+        (Vector2) Vector2.Max((Vector2) a.BottomRight, (Vector2) b.BottomRight)
       );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -14,52 +14,52 @@ namespace Fizix.Tests {
   public class BoxTreeTests {
 
     private static readonly BoxF[] Boxes1 = {
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-3, -3, 3, 3), //6x6 square
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-3, -3, 3, 3), //6x6 square
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
     };
 
     private static readonly BoxF[] Boxes2 = {
-      (-3, -3, 3, 3), //6x6 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
+      new BoxF(-3, -3, 3, 3), //6x6 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
     };
 
     [Test]
     public void AddAndGrow() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       var initBrCap = dt.BranchCapacity;
 
@@ -90,7 +90,7 @@ namespace Fizix.Tests {
 
     [Test]
     public void AddDuplicates() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < Boxes1.Length; ++i) {
@@ -119,7 +119,7 @@ namespace Fizix.Tests {
 
     [Test]
     public void RemoveMissingWhileEmpty() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < Boxes1.Length; ++i)
@@ -129,7 +129,7 @@ namespace Fizix.Tests {
 
     [Test]
     public void UpdateMissingWhileEmpty() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < Boxes1.Length; ++i)
@@ -139,7 +139,7 @@ namespace Fizix.Tests {
 
     [Test]
     public void RemoveMissingNotEmpty() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < Boxes1.Length; ++i) {
@@ -168,7 +168,7 @@ namespace Fizix.Tests {
 
     [Test]
     public void UpdateMissingNotEmpty() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < Boxes1.Length; ++i) {
@@ -214,7 +214,7 @@ namespace Fizix.Tests {
     [TestCase(18)]
     public void AddThenUpdateN(int n) {
       var boxes = Boxes1;
-      var dt = new BoxTree<int>((in int x) => boxes[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => boxes[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < n; ++i) {
@@ -271,7 +271,7 @@ namespace Fizix.Tests {
     [TestCase(17)]
     [TestCase(18)]
     public void AddThenRemoveN(int n) {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < n; ++i) {
@@ -290,7 +290,7 @@ namespace Fizix.Tests {
 
     [Test]
     public void AddThenRemove() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < Boxes1.Length; ++i) {
@@ -319,7 +319,7 @@ namespace Fizix.Tests {
 
     [Test]
     public void AddThenRemoveInReverse() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < Boxes1.Length; ++i) {
@@ -367,7 +367,7 @@ namespace Fizix.Tests {
     [TestCase(18)]
     public void AddThenUpdateThenRemoveN(int n) {
       var boxes = Boxes1;
-      var dt = new BoxTree<int>((in int x) => boxes[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => boxes[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < n; ++i) {
@@ -405,14 +405,14 @@ namespace Fizix.Tests {
 
     [Test]
     public void AddAndQuery() {
-      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2);
+      var dt = new BoxTree<int>((in int x) => Boxes1[x], capacity: 16, growthFunc: x => x += 2, locking: true);
 
       Assert.Multiple(() => {
         for (var i = 0; i < Boxes1.Length; ++i)
           Assert.True(dt.Add(i), $"Add {i}");
       });
 
-      var point = new PointF(0, 0);
+      var point = new Vector2(0, 0);
 
       var containers = Enumerable.Range(0, Boxes1.Length)
         .Where(x => Boxes1[x].Contains(point))
@@ -448,7 +448,7 @@ namespace Fizix.Tests {
       for (var i = 0; i < count; ++i)
         boxes[i].Normalize();
 
-      var dt = new BoxTree<int>((in int x) => boxes[x], capacity: count / 2, growthFunc: x => x + count / 2);
+      var dt = new BoxTree<int>((in int x) => boxes[x], capacity: count / 2, growthFunc: x => x + count / 2, locking: true);
 
       Assert.Multiple(() => {
         var sw = Stopwatch.StartNew();
@@ -457,7 +457,7 @@ namespace Fizix.Tests {
         TestContext.Out.WriteLine($"Added {count} in {sw.ElapsedMilliseconds}ms");
       });
 
-      PointF point = (0, 0);
+      var point = new Vector2(0, 0);
 
       var containers = Enumerable.Range(0, boxes.Length)
         .Where(x => boxes[x].Contains(point))

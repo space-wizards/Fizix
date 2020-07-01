@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-using CannyFastMath;
 using MathF = CannyFastMath.MathF;
 
 namespace Fizix {
@@ -9,21 +8,21 @@ namespace Fizix {
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector128<float> NormalizedNaive(in BoxF r) {
+    private static BoxF NormalizedNaive(in BoxF r) {
       float
         x1 = r.X1,
         y1 = r.Y1,
         x2 = r.X2,
         y2 = r.Y2;
 
-      return (BoxF) (
+      return new BoxF(
         MathF.Min(x1, x2), MathF.Min(y1, y2),
         MathF.Max(x1, x2), MathF.Max(y1, y2)
       );
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector128<float> NormalizedSse(Vector128<float> r) {
+    private static BoxF NormalizedSse(Vector128<float> r) {
       var xy1 = Sse.MoveLowToHigh(r, r);
       var xy2 = Sse.MoveHighToLow(r, r);
       var min = Sse.Min(xy1, xy2);
@@ -32,7 +31,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Normalized(Vector128<float> r)
+    public static BoxF Normalized(BoxF r)
       => Sse.IsSupported
         ? NormalizedSse(r)
         : NormalizedNaive(r);

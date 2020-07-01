@@ -8,7 +8,7 @@ namespace Fizix {
   [PublicAPI]
   public readonly partial struct RayF {
 
-    public PointF Start {
+    public Vector2 Start {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get;
     }
@@ -19,13 +19,13 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public RayF(PointF start, Vector2 heading) {
+    public RayF(Vector2 start, Vector2 heading) {
       Start = start;
       Heading = heading;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool IntersectsBoxNaive(in RayF ray, in BoxF box, out float distance, out PointF location, float epsilon = 1e-7f) {
+    public static bool IntersectsBoxNaive(in RayF ray, in BoxF box, out float distance, out Vector2 location, float epsilon = 1e-7f) {
       var tMin = 0.0f; // set to -FLT_MAX to get first hit on line
       var tMax = float.MaxValue; // set to max distance ray can travel (for segment)
 
@@ -114,7 +114,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IntersectsBox(in RayF ray, in BoxF box, out float distance, out PointF location, float epsilon = 1e-7f)
+    public static bool IntersectsBox(in RayF ray, in BoxF box, out float distance, out Vector2 location, float epsilon = 1e-7f)
       => IntersectsBoxNaive(ray, box, out distance, out location, epsilon);
 
   }

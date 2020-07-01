@@ -10,7 +10,7 @@ namespace Fizix {
 
     public ContactPoint ContactA, ContactB;
 
-    public PointF Center;
+    public Vector2 Center;
 
     public Vector2 Normal;
 
@@ -36,7 +36,7 @@ namespace Fizix {
   [PublicAPI]
   public struct ContactPoint {
 
-    public PointF Point;
+    public Vector2 Point;
 
     public float NormalImpulse;
 

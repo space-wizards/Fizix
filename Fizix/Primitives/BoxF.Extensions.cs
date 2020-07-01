@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -7,11 +8,11 @@ namespace Fizix {
   public static class BoxFExtensions {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(in this BoxF r, PointF p)
+    public static bool Contains(in this BoxF r, Vector2 p)
       => BoxF.ContainsPoint(r, p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(in this UiBoxF r, PointF p)
+    public static bool Contains(in this UiBoxF r, Vector2 p)
       => BoxF.ContainsPoint((BoxF) r, p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31,7 +32,7 @@ namespace Fizix {
       => BoxF.IsIntersecting(a, b);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static BoxF Translate(ref this BoxF r, PointF p) {
+    public static BoxF Translate(ref this BoxF r, Vector2 p) {
       // ReSharper disable once CompareOfFloatsByEqualityOperator
       if (p == default) return r;
 
@@ -39,27 +40,11 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static UiBoxF Translate(ref this UiBoxF r, PointF p) {
+    public static UiBoxF Translate(ref this UiBoxF r, Vector2 p) {
       // ReSharper disable once CompareOfFloatsByEqualityOperator
       if (p == default) return r;
 
-      return BoxF.Translated((BoxF) r, p);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static BoxF Translate(ref this BoxF r, SizeF p) {
-      // ReSharper disable once CompareOfFloatsByEqualityOperator
-      if (p == default) return r;
-
-      return BoxF.Translated(r, p);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static UiBoxF Translate(ref this UiBoxF r, SizeF p) {
-      // ReSharper disable once CompareOfFloatsByEqualityOperator
-      if (p == default) return r;
-
-      return BoxF.Translated((BoxF) r, p);
+      return (UiBoxF) BoxF.Translated((BoxF) r, p);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,7 +61,7 @@ namespace Fizix {
       // ReSharper disable once CompareOfFloatsByEqualityOperator
       if (f == 1f) return ref r;
 
-      r = BoxF.Scaled(r, f);
+      r = (UiBoxF)BoxF.Scaled(r, f);
       return ref r;
     }
 
@@ -85,7 +70,7 @@ namespace Fizix {
       // ReSharper disable once CompareOfFloatsByEqualityOperator
       if (f == 0f) return ref r;
 
-      r = BoxF.Grown(r, f);
+      r = (UiBoxF)BoxF.Grown(r, f);
       return ref r;
     }
 
@@ -106,7 +91,7 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref UiBoxF Normalize(ref this UiBoxF r) {
-      r = BoxF.Normalized(r);
+      r = (UiBoxF)BoxF.Normalized(r);
       return ref r;
     }
 
@@ -116,7 +101,7 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UiBoxF Union(this UiBoxF r, in UiBoxF o)
-      => BoxF.Unioned(r, o);
+      => (UiBoxF) BoxF.Unioned((BoxF)r, (BoxF)o);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Perimeter(this BoxF r)

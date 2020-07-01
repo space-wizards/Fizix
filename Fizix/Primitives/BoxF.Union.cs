@@ -9,27 +9,26 @@ namespace Fizix {
   public readonly partial struct BoxF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Vector128<float> UnionedNaive(Vector128<float> va, Vector128<float> vb) {
-      ref var aTopLeft = ref Unsafe.As<Vector128<float>, Vector2>(ref Unsafe.AsRef(va));
-      ref var aBottomRight = ref Unsafe.Add(ref aTopLeft, 1);
-      ref var bTopLeft = ref Unsafe.As<Vector128<float>, Vector2>(ref Unsafe.AsRef(vb));
-      ref var bBottomRight = ref Unsafe.Add(ref bTopLeft, 1);
-      var result = (
+    internal static BoxF UnionedNaive(BoxF a, BoxF b) {
+      var aTopLeft = a.TopLeft;
+      var aBottomRight = a.BottomRight;
+      var bTopLeft = b.TopLeft;
+      var bBottomRight = b.BottomRight;
+      return new BoxF(
         Vector2.Min(aTopLeft, bTopLeft),
         Vector2.Max(aBottomRight, bBottomRight)
       );
-      return Unsafe.As<ValueTuple<Vector2, Vector2>, Vector128<float>>(ref result);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Vector128<float> UnionedSse(Vector128<float> a, Vector128<float> b) {
+    internal static BoxF UnionedSse(Vector128<float> a, Vector128<float> b) {
       var min = Sse.Min(a, b);
       var max = Sse.Max(a, b);
       return Sse.Shuffle(min, max, 0b11_10_01_00);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Unioned(Vector128<float> a, Vector128<float> b)
+    public static BoxF Unioned(BoxF a, BoxF b)
       => Sse.IsSupported
         ? UnionedSse(a, b)
         : UnionedNaive(a, b);

@@ -9,47 +9,47 @@ namespace Fizix.Tests {
   public class BoxTests {
 
     private static readonly BoxF[] Boxes1 = {
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-3, -3, 3, 3), //6x6 square
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-3, -3, 3, 3), //6x6 square
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
     };
 
     private static readonly BoxF[] Boxes2 = {
-      (-3, -3, 3, 3), //6x6 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
-      (-3, 3, -3, 3), // point off to the bottom left
-      (-3, -3, -3, -3), // point off to the top left
-      (3, 3, 3, 3), // point off to the bottom right
-      (3, -3, 3, -3), // point off to the top right
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
-      (-2, -2, 2, 2), //4x4 square
-      (-1, -1, 1, 1), //2x2 square
+      new BoxF(-3, -3, 3, 3), //6x6 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
+      new BoxF(-3, 3, -3, 3), // point off to the bottom left
+      new BoxF(-3, -3, -3, -3), // point off to the top left
+      new BoxF(3, 3, 3, 3), // point off to the bottom right
+      new BoxF(3, -3, 3, -3), // point off to the top right
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
+      new BoxF(-2, -2, 2, 2), //4x4 square
+      new BoxF(-1, -1, 1, 1), //2x2 square
     };
 
     [Test]
@@ -157,7 +157,7 @@ namespace Fizix.Tests {
       for (var i = 0; i < count; ++i) {
         ref var box = ref boxes[i];
         box.Normalize();
-        box = (
+        box = new BoxF(
           float.IsNaN(box.X1) ? 0 : box.X1,
           float.IsNaN(box.Y1) ? 0 : box.Y1,
           float.IsNaN(box.X2) ? 0 : box.X2,

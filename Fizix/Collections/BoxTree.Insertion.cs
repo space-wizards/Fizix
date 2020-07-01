@@ -1,12 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using CannyFastMath;
 using Math = CannyFastMath.Math;
 
 namespace Fizix {
 
+  // ReSharper disable once UnusedTypeParameter
   public sealed partial class BoxTree<T> {
 
     /// <remarks>
@@ -74,46 +72,58 @@ namespace Fizix {
       if (newCapacity <= BranchCapacity)
         return;
 
-      var oldNodes = _branches;
+      EnterWriteLock();
+      try {
+        var oldNodes = _branches;
 
-      _branches = new Branch[newCapacity];
+        _branches = new Branch[newCapacity];
 
-      Array.Copy(oldNodes, _branches, BranchCount);
+        Array.Copy(oldNodes, _branches, BranchCount);
 
-      var lb = BranchCapacity - 1;
-      for (var i = BranchCount; i < lb; ++i) {
-        ref var branch = ref _branches[i];
-        branch.Parent = (Proxy) (i + 1);
-        branch.IsFree = true;
+        var lb = BranchCapacity - 1;
+        for (var i = BranchCount; i < lb; ++i) {
+          ref var branch = ref _branches[i];
+          branch.Parent = (Proxy) (i + 1);
+          branch.IsFree = true;
+        }
+
+        ref var lastBranch = ref _branches[lb];
+        lastBranch.Parent.Free();
+        lastBranch.IsFree = true;
+        FreeBranches = (Proxy) BranchCount;
       }
-
-      ref var lastBranch = ref _branches[lb];
-      lastBranch.Parent.Free();
-      lastBranch.IsFree = true;
-      FreeBranches = (Proxy) BranchCount;
+      finally {
+        ExitWriteLock();
+      }
     }
 
     public void EnsureLeafCapacity(int newCapacity) {
       if (newCapacity <= LeafCapacity)
         return;
 
-      var oldLeaves = _leaves;
+      EnterWriteLock();
+      try {
+        var oldLeaves = _leaves;
 
-      _leaves = new Leaf[newCapacity];
+        _leaves = new Leaf[newCapacity];
 
-      Array.Copy(oldLeaves, _leaves, LeafCount);
+        Array.Copy(oldLeaves, _leaves, LeafCount);
 
-      var ll = LeafCapacity - 1;
-      for (var i = (uint) LeafCount; i < ll; ++i) {
-        ref var leaf = ref _leaves[i];
-        leaf.Parent = new Proxy(i + 1, true);
-        leaf.IsFree = true;
+        var ll = LeafCapacity - 1;
+        for (var i = (uint) LeafCount; i < ll; ++i) {
+          ref var leaf = ref _leaves[i];
+          leaf.Parent = new Proxy(i + 1, true);
+          leaf.IsFree = true;
+        }
+
+        ref var lastLeaf = ref _leaves[ll];
+        lastLeaf.Parent.Free();
+        lastLeaf.IsFree = true;
+        FreeLeaves = new Proxy(LeafCount, true);
       }
-
-      ref var lastLeaf = ref _leaves[ll];
-      lastLeaf.Parent.Free();
-      lastLeaf.IsFree = true;
-      FreeLeaves = new Proxy(LeafCount, true);
+      finally {
+        ExitWriteLock();
+      }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
@@ -152,7 +162,9 @@ namespace Fizix {
       Assert(!descendent.IsLeaf);
 
 #if DEBUG
-      var loopCount = 0;
+      // ReSharper disable TooWideLocalVariableScope
+      int loopCount;
+      // ReSharper endif TooWideLocalVariableScope
 #endif
       var haveCombinedBox = false;
       BoxF combinedBox = default;
@@ -411,7 +423,7 @@ namespace Fizix {
 
         ValidateHeightAndBoxes(GetBranch(index));
         Validate();
-        
+
         index = BalanceStep(index);
 
         ref var indexNode = ref GetBranch(index);
@@ -585,11 +597,11 @@ namespace Fizix {
       return iA;
     }
 
-    
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private void UpdateHeight(Proxy proxy) {
       if (proxy.IsFree)
         return;
+
       ref var branch = ref GetBranch(proxy);
       var branchHeight = 2;
       if (branch.Child1.IsFree) {
@@ -622,7 +634,7 @@ namespace Fizix {
 
         ref var parentBranch = ref GetBranch(parent);
         bool useSiblingHeight;
-        var whichSibling = -1;
+        int whichSibling;
         if (parentBranch.Child1 == proxy) {
           useSiblingHeight = !parentBranch.Child2.IsLeaf;
           whichSibling = 1;
@@ -641,7 +653,6 @@ namespace Fizix {
 
           if (siblingHeight > branchHeight)
             branchHeight = siblingHeight;
-
         }
 
         Assert(parentBranch.Box.Contains(useSiblingHeight ? ref GetBranch(sibling).Box : ref GetLeaf(sibling).Box));
@@ -649,7 +660,7 @@ namespace Fizix {
         branchHeight += 1;
         if (parentBranch.Height == branchHeight) {
           ValidateHeightAndBoxes(parentBranch);
-#if DEBUG_DYNAMIC_TREE          
+#if DEBUG_DYNAMIC_TREE
           if (!parentBranch.Parent.IsFree)
             ValidateHeightAndBoxes(GetBranch(parentBranch.Parent));
 #endif
@@ -663,7 +674,7 @@ namespace Fizix {
         ValidateHeightAndBoxes(parentBranch);
       }
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private unsafe void UpdateHeightAndBoxes(Proxy proxy, in BoxF box) {
       ref var branch = ref GetBranch(proxy);
@@ -702,8 +713,8 @@ namespace Fizix {
         ref var prevBox = ref Unsafe.AsRef<BoxF>(prevBoxPtr);
 
         ref var parentBranch = ref GetBranch(parent);
-        var useSiblingHeight = false;
-        var whichSibling = -1;
+        bool useSiblingHeight;
+        int whichSibling;
         if (parentBranch.Child1 == proxy) {
           useSiblingHeight = !parentBranch.Child2.IsLeaf;
           whichSibling = 1;
@@ -739,11 +750,12 @@ namespace Fizix {
         branchHeight += 1;
         if (parentBranch.Height == branchHeight) {
           ValidateHeightAndBoxes(parentBranch);
-          
+
           if (updateBox && !parentBranch.Parent.IsFree) {
             UpdateBoxes(ref GetBranch(parentBranch.Parent), prevBox);
             ValidateHeightAndBoxes(GetBranch(parentBranch.Parent));
           }
+
           break;
         }
 

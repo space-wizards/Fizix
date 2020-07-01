@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -6,12 +7,12 @@ namespace Fizix {
   [PublicAPI]
   public readonly partial struct QuadF {
 
-    public PointF Center {
+    public Vector2 Center {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get;
     }
 
-    public SizeF Size {
+    public Vector2 Size {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get;
     }
@@ -21,17 +22,17 @@ namespace Fizix {
       get;
     }
 
-    private QuadF(PointF center, SizeF size, float angle)
+    private QuadF(Vector2 center, Vector2 size, float angle)
       => (Center, Size, Angle) = (center, size, angle);
 
     public float Width {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => Size.Width;
+      get => Size.X;
     }
 
     public float Height {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => Size.Height;
+      get => Size.Y;
     }
 
     public BoxF Box {

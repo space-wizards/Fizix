@@ -1,10 +1,11 @@
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace Fizix {
 
   [PublicAPI]
-  public readonly struct CollisionBoxF<T> : IBoxF where T : struct {
+  public readonly struct CollisionBoxF<T> where T : struct {
 
     private readonly BoxF _box;
 
@@ -69,22 +70,22 @@ namespace Fizix {
       get => _box.Height;
     }
 
-    public PointF TopLeft {
+    public Vector2 TopLeft {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.TopLeft;
     }
 
-    public PointF BottomRight {
+    public Vector2 BottomRight {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.BottomRight;
     }
 
-    public PointF Center {
+    public Vector2 Center {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.Center;
     }
 
-    public SizeF Size {
+    public Vector2 Size {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.Size;
     }

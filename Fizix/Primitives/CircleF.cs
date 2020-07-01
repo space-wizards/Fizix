@@ -17,36 +17,36 @@ namespace Fizix {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get;
     }
+
     public float RadiusSquared {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => Radius * Radius;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Contains(PointF p)
-      => ((Vector2)(Center - p)).LengthSquared() < RadiusSquared;
+    public bool Contains(Vector2 p)
+      => ((Vector2) (Center - p)).LengthSquared() < RadiusSquared;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Intersects(CircleF circle)
-    {
+    public bool Intersects(CircleF circle) {
       var d = Center - circle.Center;
       var r = Radius + circle.Radius;
-      return Vector2.Dot(d,d) < r * r;
+      return Vector2.Dot(d, d) < r * r;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Intersects(BoxF box)
-    {
+    public bool Intersects(BoxF box) {
       var closestX = MathF.Median(box.Left, box.Right, Center.X);
       var closestY = MathF.Median(box.Bottom, box.Top, Center.Y);
-      return Contains((closestX, closestY));
+      return Contains(new Vector2(closestX, closestY));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BoxF ContainingBox() {
       var r = new Vector2(Radius);
-      return (BoxF) (Center - r, Center + r);
+      return new BoxF(Center - r, Center + r);
     }
+
   }
 
 }

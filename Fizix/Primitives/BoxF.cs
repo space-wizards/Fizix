@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
@@ -9,7 +7,7 @@ using JetBrains.Annotations;
 namespace Fizix {
 
   [PublicAPI]
-  public readonly partial struct BoxF : IBoxF {
+  public readonly partial struct BoxF {
 
 #pragma warning disable 169, 649
     private readonly Vector128<float> _value;
@@ -18,31 +16,15 @@ namespace Fizix {
       => _value = Vector128.Create(x1, y1, x2, y2);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BoxF(PointF topLeft, PointF bottomRight) {
+    public BoxF(Vector2 topLeft, Vector2 bottomRight) {
       if (Sse.IsSupported) {
-        _value = Sse.MoveLowToHigh(topLeft, bottomRight);
+        var tl = topLeft.ToVector128();
+        var br = bottomRight.ToVector128();
+        _value = Sse.MoveLowToHigh(tl, br);
+        return;
       }
 
       _value = Vector128.Create(topLeft.X, topLeft.Y, bottomRight.X, bottomRight.Y);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BoxF(PointF topLeft, SizeF widthHeight) {
-      if (Sse.IsSupported) {
-        _value = Sse.MoveLowToHigh(topLeft, Sse.Add(topLeft, widthHeight));
-      }
-
-      var (x, y) = topLeft + widthHeight;
-      _value = Vector128.Create(topLeft.X, topLeft.Y, x, y);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BoxF(SizeF topLeft, SizeF bottomRight) {
-      if (Sse.IsSupported) {
-        _value = Sse.MoveLowToHigh(topLeft, bottomRight);
-      }
-
-      _value = Vector128.Create(topLeft.Width, topLeft.Height, bottomRight.Width, bottomRight.Height);
     }
 
 #pragma warning restore 169, 649
@@ -97,17 +79,17 @@ namespace Fizix {
       get => Y2 - Y1;
     }
 
-    public PointF TopLeft {
+    public Vector2 TopLeft {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => new PointF(X1, Y1);
+      get => new Vector2(X1, Y1);
     }
 
-    public PointF BottomRight {
+    public Vector2 BottomRight {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => new PointF(X2, Y2);
+      get => new Vector2(X2, Y2);
     }
 
-    public PointF Center {
+    public Vector2 Center {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
         var tl = TopLeft;
@@ -116,34 +98,20 @@ namespace Fizix {
       }
     }
 
-    public SizeF Size {
+    public Vector2 Size {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => GetSize(this);
     }
 
+    /*
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ValueTuple<float, float, float, float>(BoxF v)
-      => Unsafe.As<BoxF, ValueTuple<float, float, float, float>>(ref v);
+    public static explicit operator UiBoxF(BoxF v)
+      => Unsafe.As<BoxF, UiBoxF>(ref v);
+    */
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator BoxF(ValueTuple<float, float, float, float> v)
-      => Unsafe.As<ValueTuple<float, float, float, float>, BoxF>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator ValueTuple<Vector2, Vector2>(BoxF v)
-      => Unsafe.As<BoxF, ValueTuple<Vector2, Vector2>>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static explicit operator BoxF(ValueTuple<Vector2, Vector2> v)
-      => Unsafe.As<ValueTuple<Vector2, Vector2>, BoxF>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ValueTuple<PointF, PointF>(BoxF v)
-      => Unsafe.As<BoxF, ValueTuple<PointF, PointF>>(ref v);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator BoxF(ValueTuple<PointF, PointF> v)
-      => Unsafe.As<ValueTuple<PointF, PointF>, BoxF>(ref v);
+    public static implicit operator BoxF(UiBoxF v)
+      => Unsafe.As<UiBoxF, BoxF>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Vector128<float>(BoxF v)
@@ -164,13 +132,13 @@ namespace Fizix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Perimeter(in BoxF x) {
       var s = x.Size;
-      return (s.Width + s.Height) * 2;
+      return (s.X + s.Y) * 2;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Area(in BoxF x) {
       var s = x.Size;
-      return s.Width * s.Height;
+      return s.X * s.Y;
     }
 
     public override string ToString()
