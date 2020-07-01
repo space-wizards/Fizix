@@ -20,7 +20,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static BoxF GrownSse3(in Vector128<float> r, float size) {
+    internal static BoxF GrownSse3(in BoxF r, float size) {
       var half = Vector128.Create(size / -2);
       var ordered = Sse.Shuffle(r, r, 0b00_10_01_11);
       ordered = Sse3.AddSubtract(ordered, half);
@@ -28,7 +28,7 @@ namespace Fizix {
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<float> Grown(Vector128<float> r, float p)
+    public static BoxF Grown(in BoxF r, float p)
       => Sse3.IsSupported
         ? GrownSse3(r, p)
         : GrownNaive(r, p);

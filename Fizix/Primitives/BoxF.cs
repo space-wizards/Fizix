@@ -144,6 +144,18 @@ namespace Fizix {
     public override string ToString()
       => $"(T{Top}, L{Left}, B{Bottom}, R{Right})";
 
+    public void Deconstruct(out Vector2 topLeft, out Vector2 bottomRight) {
+      topLeft = TopLeft;
+      bottomRight = BottomRight;
+    }
+
+    public void Deconstruct(out float x1, out float y1, out float x2, out float y2) {
+      x1 = X1;
+      y1 = Y1;
+      x2 = X2;
+      y2 = Y2;
+    }
+
   }
 
 }

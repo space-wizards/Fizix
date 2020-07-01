@@ -17,12 +17,12 @@ namespace Fizix {
       get;
     }
 
-    public float Angle {
+    public double Angle {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get;
     }
 
-    private QuadF(Vector2 center, Vector2 size, float angle)
+    private QuadF(Vector2 center, Vector2 size, double angle)
       => (Center, Size, Angle) = (center, size, angle);
 
     public float Width {

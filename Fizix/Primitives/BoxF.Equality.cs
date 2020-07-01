@@ -30,11 +30,11 @@ namespace Fizix {
       => _value.GetHashCode();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator ==(BoxF left, BoxF right)
+    public static bool operator ==(in BoxF left, in BoxF right)
       => left.Equals(right);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool operator !=(BoxF left, BoxF right)
+    public static bool operator !=(in BoxF left, in BoxF right)
       => !left.Equals(right);
 
   }

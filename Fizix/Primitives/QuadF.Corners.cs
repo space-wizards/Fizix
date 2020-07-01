@@ -8,7 +8,8 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static void CornersNaive(in QuadF q, out Vector2 tl, out Vector2 br, out Vector2 tr, out Vector2 bl) {
-      MathF.SinCos(q.Angle, out var sinTheta, out var cosTheta);
+      Math.SinCos(q.Angle, out var sinTheta, out var cosTheta);
+
 
       var qCenter = q.Center;
       var qSize = q.Size;
@@ -19,24 +20,27 @@ namespace Fizix {
       var (qTrX, qTrY) = new Vector2(qCenter.X + halfSize.X, qCenter.Y - halfSize.Y);
       var (qBlX, qBlY) = new Vector2(qCenter.X - halfSize.X, qCenter.Y + halfSize.Y);
 
+      var cosThetaF = (float)cosTheta;
+      var sinThetaF = (float)sinTheta;
+
       tl = new Vector2(
-        MathF.FusedMultiplyAdd(qTlX, cosTheta, qTlY * -sinTheta),
-        MathF.FusedMultiplyAdd(qTlX, sinTheta, qTlY * cosTheta)
+        MathF.FusedMultiplyAdd(qTlX, cosThetaF, qTlY * -sinThetaF),
+        MathF.FusedMultiplyAdd(qTlX, sinThetaF, qTlY * cosThetaF)
       );
 
       br = new Vector2(
-        MathF.FusedMultiplyAdd(qBrX, cosTheta, qBrY * -sinTheta),
-        MathF.FusedMultiplyAdd(qBrX, sinTheta, qBrY * cosTheta)
+        MathF.FusedMultiplyAdd(qBrX, cosThetaF, qBrY * -sinThetaF),
+        MathF.FusedMultiplyAdd(qBrX, sinThetaF, qBrY * cosThetaF)
       );
 
       tr = new Vector2(
-        MathF.FusedMultiplyAdd(qTrX, cosTheta, qTrY * -sinTheta),
-        MathF.FusedMultiplyAdd(qTrX, sinTheta, qTrY * cosTheta)
+        MathF.FusedMultiplyAdd(qTrX, cosThetaF, qTrY * -sinThetaF),
+        MathF.FusedMultiplyAdd(qTrX, sinThetaF, qTrY * cosThetaF)
       );
 
       bl = new Vector2(
-        MathF.FusedMultiplyAdd(qBlX, cosTheta, qBlY * -sinTheta),
-        MathF.FusedMultiplyAdd(qBlX, sinTheta, qBlY * cosTheta)
+        MathF.FusedMultiplyAdd(qBlX, cosThetaF, qBlY * -sinThetaF),
+        MathF.FusedMultiplyAdd(qBlX, sinThetaF, qBlY * cosThetaF)
       );
     }
 

@@ -76,7 +76,7 @@ namespace Fizix {
       // ReSharper disable once CompareOfFloatsByEqualityOperator
       if (f == 0f) return ref r;
 
-      r = BoxF.Grown(r, f);
+      r = (UiBoxF) BoxF.Grown((BoxF) r, f);
       return ref r;
     }
 

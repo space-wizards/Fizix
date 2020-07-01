@@ -15,7 +15,7 @@ namespace Fizix {
       get;
     }
 
-    public CollisionBoxF(BoxF box, T collisionMask) {
+    public CollisionBoxF(in BoxF box, T collisionMask) {
       _box = box;
       CollisionMask = collisionMask;
     }

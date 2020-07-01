@@ -9,11 +9,14 @@ namespace Fizix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IntersectsBoxNaive(in QuadF q, in BoxF b) {
       var diff = q.Center - b.Center;
-      MathF.SinCos(q.Angle, out var sinTheta, out var cosTheta);
+      Math.SinCos(q.Angle, out var sinTheta, out var cosTheta);
 
+      var cosThetaF = (float)cosTheta;
+      var sinThetaF = (float)sinTheta;
+      
       var reoriented = new Vector2(
-        MathF.FusedMultiplyAdd(diff.X, cosTheta, diff.Y * -sinTheta),
-        MathF.FusedMultiplyAdd(diff.X, sinTheta, diff.Y * cosTheta)
+        MathF.FusedMultiplyAdd(diff.X, cosThetaF, diff.Y * -sinThetaF),
+        MathF.FusedMultiplyAdd(diff.X, sinThetaF, diff.Y * cosThetaF)
       );
 
       var qSize = q.Size;
