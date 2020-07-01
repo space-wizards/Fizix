@@ -5,7 +5,6 @@ using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 using NUnit.Framework;
-using Fizix;
 
 namespace Fizix.Tests {
 

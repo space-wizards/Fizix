@@ -100,6 +100,7 @@ namespace Fizix.Tests {
 
     [Test]
     [TestCase(1000)]
+    [Explicit]
     public unsafe void ContainsFuzz(int count) {
       var boxes = new BoxF[count];
 
@@ -123,6 +124,7 @@ namespace Fizix.Tests {
 
     [Test]
     [TestCase(1000)]
+    [Explicit]
     public unsafe void IntersectsFuzz(int count) {
       var boxes = new BoxF[count];
 
@@ -146,6 +148,7 @@ namespace Fizix.Tests {
 
     [Test]
     [TestCase(1000)]
+    [Explicit]
     public unsafe void UnionedFuzz(int count) {
       var boxes = new BoxF[count];
 
@@ -177,6 +180,7 @@ namespace Fizix.Tests {
 
     [Test]
     [TestCase(10000)]
+    [Explicit]
     public unsafe void IntersectsBench(int count) {
       var boxes = new BoxF[count];
 
@@ -213,6 +217,7 @@ namespace Fizix.Tests {
 
     [Test]
     [TestCase(10000)]
+    [Explicit]
     public unsafe void ContainsBench(int count) {
       var boxes = new BoxF[count];
 
@@ -249,6 +254,7 @@ namespace Fizix.Tests {
 
     [Test]
     [TestCase(10000)]
+    [Explicit]
     public unsafe void UnionedBench(int count) {
       var boxes = new BoxF[count];
 
