@@ -26,7 +26,7 @@ namespace Fizix {
     public CollisionManifold(ContactPoint a, ContactPoint b, Vector2 normal, bool alongFace) {
       ContactA = a;
       ContactB = b;
-      Center = (Vector2) (ContactA.Point + ContactB.Point) * .5f;
+      Center = (ContactA.Point + ContactB.Point) * .5f;
       Normal = normal;
       AlongFace = alongFace;
     }

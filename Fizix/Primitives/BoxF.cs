@@ -110,7 +110,7 @@ namespace Fizix {
     */
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator BoxF(UiBoxF v)
+    public static explicit operator BoxF(UiBoxF v)
       => Unsafe.As<UiBoxF, BoxF>(ref v);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

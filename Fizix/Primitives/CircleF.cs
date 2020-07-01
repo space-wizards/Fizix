@@ -25,7 +25,7 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(Vector2 p)
-      => ((Vector2) (Center - p)).LengthSquared() < RadiusSquared;
+      => (Center - p).LengthSquared() < RadiusSquared;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Intersects(CircleF circle) {

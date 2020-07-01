@@ -32,12 +32,9 @@ namespace Fizix {
       => BoxF.IsIntersecting(a, b);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static BoxF Translate(ref this BoxF r, Vector2 p) {
+    public static BoxF Translate(ref this BoxF r, Vector2 p)
       // ReSharper disable once CompareOfFloatsByEqualityOperator
-      if (p == default) return r;
-
-      return BoxF.Translated(r, p);
-    }
+      => p == default ? r : BoxF.Translated(r, p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UiBoxF Translate(ref this UiBoxF r, Vector2 p) {
@@ -61,7 +58,7 @@ namespace Fizix {
       // ReSharper disable once CompareOfFloatsByEqualityOperator
       if (f == 1f) return ref r;
 
-      r = (UiBoxF)BoxF.Scaled(r, f);
+      r = (UiBoxF) BoxF.Scaled((BoxF) r, f);
       return ref r;
     }
 
@@ -70,7 +67,7 @@ namespace Fizix {
       // ReSharper disable once CompareOfFloatsByEqualityOperator
       if (f == 0f) return ref r;
 
-      r = (UiBoxF)BoxF.Grown(r, f);
+      r = BoxF.Grown(r, f);
       return ref r;
     }
 
@@ -91,7 +88,7 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref UiBoxF Normalize(ref this UiBoxF r) {
-      r = (UiBoxF)BoxF.Normalized(r);
+      r = (UiBoxF) BoxF.Normalized((BoxF) r);
       return ref r;
     }
 
@@ -101,7 +98,7 @@ namespace Fizix {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UiBoxF Union(this UiBoxF r, in UiBoxF o)
-      => (UiBoxF) BoxF.Unioned((BoxF)r, (BoxF)o);
+      => (UiBoxF) BoxF.Unioned((BoxF) r, (BoxF) o);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Perimeter(this BoxF r)

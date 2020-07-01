@@ -9,8 +9,8 @@ namespace Fizix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static BoxF OverlapNaive(in BoxF a, in BoxF b)
       => new BoxF(
-        Vector2.Min((Vector2) a.TopLeft, (Vector2) b.TopLeft),
-        (Vector2) Vector2.Max((Vector2) a.BottomRight, (Vector2) b.BottomRight)
+        Vector2.Min(a.TopLeft, b.TopLeft),
+        Vector2.Max(a.BottomRight, b.BottomRight)
       );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
