@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Fizix.Tests {
@@ -463,31 +464,35 @@ namespace Fizix.Tests {
         .Distinct()
         .OrderBy(x => x).ToArray();
 
-      var results = new List<int>(containers.Length);
-      {
+      var procCount = Environment.ProcessorCount;
+
+      if (procCount == 1)
+        Assert.Inconclusive("Could not query in parallel.");
+      
+      TestContext.WriteLine($"Testing with {procCount} parallel instances.");
+      
+      Parallel.For(0, procCount, x => {
+        var results = new List<int>(containers.Length);
         var sw = Stopwatch.StartNew();
-        foreach (var item in dt.Query(point)) {
-          results.Add(item);
+        results.AddRange(dt.Query(point));
+        TestContext.WriteLine($"{x}: Queried {results.Count} in {sw.ElapsedMilliseconds}ms");
+        results.Sort(Comparer<int>.Default);
+
+        //Assert.Multiple(() =>
+        {
+          Assert.AreEqual(containers.Length, results.Count, "Length");
+          var l = Math.Min(containers.Length, results.Count);
+          for (var i = 0; i < l; ++i)
+            Assert.AreEqual(containers[i], results[i]);
         }
-
-        TestContext.Out.WriteLine($"Queried {results.Count} in {sw.ElapsedMilliseconds}ms");
-      }
-      results.Sort(Comparer<int>.Default);
-
-      //Assert.Multiple(() =>
-      {
-        Assert.AreEqual(containers.Length, results.Count, "Length");
-        var l = Math.Min(containers.Length, results.Count);
-        for (var i = 0; i < l; ++i)
-          Assert.AreEqual(containers[i], results[i]);
-      }
-      //);
-      {
-        Assert.AreEqual(containers.Length, results.Count, "Length");
-        var l = Math.Min(containers.Length, results.Count);
-        for (var i = 0; i < l; ++i)
-          Assert.AreEqual(containers[i], results[i]);
-      }
+        //);
+        {
+          Assert.AreEqual(containers.Length, results.Count, "Length");
+          var l = Math.Min(containers.Length, results.Count);
+          for (var i = 0; i < l; ++i)
+            Assert.AreEqual(containers[i], results[i]);
+        }
+      });
 
 #if DEBUG
       //var debugView = dt.DebugAllocatedNodes;
