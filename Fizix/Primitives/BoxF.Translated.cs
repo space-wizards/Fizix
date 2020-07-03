@@ -1,4 +1,3 @@
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
@@ -17,7 +16,7 @@ namespace Fizix {
       p = Sse.MoveLowToHigh(p, p);
       return Sse.Add(r, p);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoxF Translated(in BoxF r, Vector2 p)
       => Sse.IsSupported

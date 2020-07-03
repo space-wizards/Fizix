@@ -9,7 +9,6 @@ namespace Fizix {
 
     private readonly BoxF _box;
 
-
     public T CollisionMask {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get;

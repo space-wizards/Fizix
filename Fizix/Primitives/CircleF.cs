@@ -1,11 +1,13 @@
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using CannyFastMath;
 using JetBrains.Annotations;
+using MathF = CannyFastMath.MathF;
 
 namespace Fizix {
 
   [PublicAPI]
+  [Serializable]
   public readonly struct CircleF {
 
     public Vector2 Center {

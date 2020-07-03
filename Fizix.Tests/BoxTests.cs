@@ -6,6 +6,9 @@ using Fizix;
 
 namespace Fizix.Tests {
 
+  [Parallelizable(ParallelScope.All | ParallelScope.Fixtures)]
+  [TestFixture]
+  [TestOf(typeof(BoxF))]
   public class BoxTests {
 
     private static readonly BoxF[] Boxes1 = {

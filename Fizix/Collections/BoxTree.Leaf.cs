@@ -31,7 +31,6 @@ namespace Fizix {
         internal set => _used = !value;
       }
 
-
       public bool IsLeaf {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => true;

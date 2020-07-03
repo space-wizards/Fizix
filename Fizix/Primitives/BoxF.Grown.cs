@@ -26,7 +26,7 @@ namespace Fizix {
       ordered = Sse3.AddSubtract(ordered, half);
       return Sse.Shuffle(ordered, ordered, 0b00_10_01_11);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static BoxF Grown(in BoxF r, float p)
       => Sse3.IsSupported

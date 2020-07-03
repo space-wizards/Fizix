@@ -1,5 +1,7 @@
-using System;
 using System.Runtime.CompilerServices;
+#if DEBUG
+using System;
+#endif
 
 namespace Fizix {
 
@@ -125,7 +127,6 @@ namespace Fizix {
         : CalculateHeight(GetBranch(proxy));
     }
 
-
     private int CalculateLeafHeight(in Leaf leaf) {
       if (leaf.IsFree)
         return -1;
@@ -136,7 +137,7 @@ namespace Fizix {
         return int.MinValue; // detached leaf, could be a NaN
 
       ref var branch = ref GetBranch(parent);
-      
+
       return 1 + CalculateBranchHeight(branch);
     }
 
@@ -144,12 +145,12 @@ namespace Fizix {
       var height = outerBranch.Height;
       if (height > 0)
         return height;
-      
+
       if (outerBranch.IsFree)
         return -1;
 
       var parent = outerBranch.Parent;
-      
+
       var i = 0;
       do {
         if (i > _branchCount)
@@ -158,7 +159,7 @@ namespace Fizix {
         Assert(!parent.IsLeaf);
 
         ref var branch = ref GetBranch(parent);
-        
+
         parent = branch.Parent;
 
         ++i;
@@ -170,7 +171,8 @@ namespace Fizix {
     private int CalculateHeight(INode node) {
       if (node is Branch br)
         return CalculateBranchHeight(br);
-      return CalculateLeafHeight((Leaf)node);
+
+      return CalculateLeafHeight((Leaf) node);
     }
 
   }

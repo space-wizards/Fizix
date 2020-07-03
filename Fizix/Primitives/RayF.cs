@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -6,7 +7,8 @@ using MathF = CannyFastMath.MathF;
 namespace Fizix {
 
   [PublicAPI]
-  public readonly partial struct RayF {
+  [Serializable]
+  public readonly struct RayF {
 
     public Vector2 Start {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

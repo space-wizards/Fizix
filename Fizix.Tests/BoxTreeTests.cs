@@ -9,6 +9,7 @@ using NUnit.Framework;
 
 namespace Fizix.Tests {
 
+  [Parallelizable(ParallelScope.All | ParallelScope.Fixtures)]
   [TestFixture]
   [TestOf(typeof(BoxTree<>))]
   public class BoxTreeTests {

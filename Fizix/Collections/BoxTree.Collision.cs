@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Fizix {
 
   public sealed partial class BoxTree<T> {
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerable<(T A, T B)> GetCollisions(bool approx = false) {
       EnterReadLock();

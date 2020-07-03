@@ -17,6 +17,7 @@ namespace Fizix {
     public static ref Vector128<float> AsVector128Float(in this Vector4 a)
       => ref Unsafe.As<Vector4, Vector128<float>>(ref Unsafe.AsRef(a));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<float> ToVector128(this Vector2 v) {
       var x = Vector128.CreateScalarUnsafe(v.X);
       if (!Sse.IsSupported)
@@ -26,12 +27,18 @@ namespace Fizix {
       return Sse.UnpackLow(x, y);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 ToVector2(this Vector128<float> v) {
       var x = v.GetElement(0);
       var y = v.GetElement(1);
       return new Vector2(x, y);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector2 Normalized(this Vector2 v)
+      => Vector2.Normalize(v);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Deconstruct(this Vector2 v, out float x, out float y) {
       x = v.X;
       y = v.Y;

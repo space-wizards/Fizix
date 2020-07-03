@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -5,6 +6,7 @@ using JetBrains.Annotations;
 namespace Fizix {
 
   [PublicAPI]
+  [Serializable]
   public readonly partial struct QuadF {
 
     public Vector2 Center {

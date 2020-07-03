@@ -56,7 +56,7 @@ namespace Fizix {
 
     [Conditional("DEBUG_DYNAMIC_TREE")]
     private void Validate(Proxy proxy) {
-      for(;;) {
+      for (;;) {
         if (proxy.IsFree)
           return;
 

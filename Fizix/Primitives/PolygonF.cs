@@ -1,11 +1,13 @@
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
-using CannyFastMath;
+using MathF = CannyFastMath.MathF;
 
 namespace Fizix {
 
   [PublicAPI]
+  [Serializable]
   public static class PolygonF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -48,7 +50,7 @@ namespace Fizix {
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool TriContains(Vector2 t, Vector2 br, Vector2 bl, Vector2 point) {
       var result = false;
-      var (pX,pY) = point;
+      var (pX, pY) = point;
       var (aX, aY) = t;
       var (bX, bY) = br;
       var (cX, cY) = bl;
@@ -70,14 +72,14 @@ namespace Fizix {
         && MathF.FusedMultiplyAdd((pY - cY) / (bY - cY), bX - cX, cX)
         < pX)
         result = !result;
-      
+
       return result;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool QuadContains(Vector2 tl, Vector2 tr, Vector2 br, Vector2 bl, Vector2 point) {
       var result = false;
-      var (pX,pY) = point;
+      var (pX, pY) = point;
       var (aX, aY) = tl;
       var (bX, bY) = tr;
       var (cX, cY) = br;
@@ -106,7 +108,7 @@ namespace Fizix {
         && MathF.FusedMultiplyAdd((pY - dY) / (cY - dY), cX - dX, dX)
         < pX)
         result = !result;
-      
+
       return result;
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using JetBrains.Annotations;
 using MathF = CannyFastMath.MathF;
@@ -5,6 +6,7 @@ using MathF = CannyFastMath.MathF;
 namespace Fizix {
 
   [PublicAPI]
+  [Serializable]
   public static class LineSegF {
 
     public static bool Intersection(Vector2 aStart, Vector2 aEnd, Vector2 bStart, Vector2 bEnd, out Vector2 intersection) {

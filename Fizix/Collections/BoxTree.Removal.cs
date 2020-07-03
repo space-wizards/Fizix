@@ -84,6 +84,7 @@ namespace Fizix {
             FreeBranch(parent);
           }
         }
+
         return;
       }
 

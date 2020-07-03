@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+#if DEBUG
+using System.Linq;
+#endif
 
 namespace Fizix {
 

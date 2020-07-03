@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
@@ -7,6 +8,7 @@ using JetBrains.Annotations;
 namespace Fizix {
 
   [PublicAPI]
+  [Serializable]
   public readonly partial struct BoxF {
 
 #pragma warning disable 169, 649

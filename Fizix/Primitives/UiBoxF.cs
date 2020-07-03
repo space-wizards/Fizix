@@ -2,9 +2,12 @@ using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using JetBrains.Annotations;
 
 namespace Fizix {
 
+  [PublicAPI]
+  [Serializable]
   public struct UiBoxF {
 
 #pragma warning disable 649
@@ -80,7 +83,7 @@ namespace Fizix {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => _box.Size;
     }
-    
+
     /*
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator BoxF(UiBoxF v)

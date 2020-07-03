@@ -10,7 +10,6 @@ namespace Fizix {
     public static void CornersNaive(in QuadF q, out Vector2 tl, out Vector2 br, out Vector2 tr, out Vector2 bl) {
       Math.SinCos(q.Angle, out var sinTheta, out var cosTheta);
 
-
       var qCenter = q.Center;
       var qSize = q.Size;
 
@@ -20,8 +19,8 @@ namespace Fizix {
       var (qTrX, qTrY) = new Vector2(qCenter.X + halfSize.X, qCenter.Y - halfSize.Y);
       var (qBlX, qBlY) = new Vector2(qCenter.X - halfSize.X, qCenter.Y + halfSize.Y);
 
-      var cosThetaF = (float)cosTheta;
-      var sinThetaF = (float)sinTheta;
+      var cosThetaF = (float) cosTheta;
+      var sinThetaF = (float) sinTheta;
 
       tl = new Vector2(
         MathF.FusedMultiplyAdd(qTlX, cosThetaF, qTlY * -sinThetaF),
