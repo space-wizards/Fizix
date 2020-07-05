@@ -77,6 +77,9 @@ namespace Fizix {
       return ref GetBox(ref GetBranch(proxy));
     }
 
+    public BoxF GetApproximateBounds()
+      => _branchCount == 0 ? default : _branches[0].Box;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SetParent(Proxy proxy, Proxy newParent) {
       Assert(!proxy.IsFree);

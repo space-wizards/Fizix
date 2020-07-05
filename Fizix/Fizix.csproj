@@ -8,13 +8,13 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/space-wizards/Fizix.git</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Version>0.1.5</Version>
+        <Version>0.1.6</Version>
         <Copyright>Copyright © 2020 Tyler Young</Copyright>
         <Authors>Tyler Young</Authors>
         <Company />
         <Description>A canny 2D physics library.</Description>
         <PackageId>Fizix</PackageId>
-        <PackageTags>canny 2d physics</PackageTags>
+        <PackageTags>canny 2d physics fizix</PackageTags>
         <LangVersion>8</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
