@@ -432,7 +432,6 @@ namespace Fizix.Tests {
 
     [Test]
     [TestCase(500)]
-    [TestCase(5000)]
     [TestCase(50000)]
     public unsafe void BigAddAndQuery(int count) {
 #if DEBUG
@@ -469,9 +468,9 @@ namespace Fizix.Tests {
 
       if (procCount == 1)
         Assert.Inconclusive("Could not query in parallel.");
-      
+
       TestContext.WriteLine($"Testing with {procCount} parallel instances.");
-      
+
       Parallel.For(0, procCount, x => {
         var results = new List<int>(containers.Length);
         var sw = Stopwatch.StartNew();
@@ -500,6 +499,78 @@ namespace Fizix.Tests {
 #endif
     }
 
+    [Test]
+    [TestCase(500)]
+    [TestCase(50000)]
+    public unsafe void BigAddAndQueryCallback(int count) {
+#if DEBUG
+      if (count > 1000)
+        Assert.Inconclusive("This would take too long under debug conditions due to validation.");
+#endif
+      var boxes = new BoxF[count];
+
+      var rng = RandomNumberGenerator.Create();
+
+      fixed (BoxF* pBoxes = &boxes[0])
+        rng.GetBytes(new Span<byte>(pBoxes, count * sizeof(BoxF)));
+
+      for (var i = 0; i < count; ++i)
+        boxes[i].Normalize();
+
+      var dt = new BoxTree<int>((in int x) => boxes[x],
+        capacity: count, growthFunc: x => throw new NotImplementedException(), locking: true);
+
+      Assert.Multiple(() => {
+        var sw = Stopwatch.StartNew();
+        for (var i = 0; i < boxes.Length; ++i)
+          Assert.True(dt.Add(i), $"Add {i}");
+        TestContext.Out.WriteLine($"Added {count} in {sw.ElapsedMilliseconds}ms");
+      });
+
+      var point = new Vector2(0, 0);
+
+      var containers = Enumerable.Range(0, boxes.Length)
+        .Where(x => boxes[x].Contains(point))
+        .Distinct()
+        .OrderBy(x => x).ToArray();
+
+      var procCount = Environment.ProcessorCount;
+
+      if (procCount == 1)
+        Assert.Inconclusive("Could not query in parallel.");
+
+      TestContext.WriteLine($"Testing with {procCount} parallel instances.");
+
+      Parallel.For(0, procCount, x => {
+        var results = new List<int>(containers.Length);
+        var sw = Stopwatch.StartNew();
+        dt.Query((ref int v) => {
+          results.Add(v);
+          return true;
+        }, point);
+        TestContext.WriteLine($"{x}: Queried {results.Count} in {sw.ElapsedMilliseconds}ms");
+        results.Sort(Comparer<int>.Default);
+
+        //Assert.Multiple(() =>
+        {
+          Assert.AreEqual(containers.Length, results.Count, "Length");
+          var l = Math.Min(containers.Length, results.Count);
+          for (var i = 0; i < l; ++i)
+            Assert.AreEqual(containers[i], results[i]);
+        }
+        //);
+        {
+          Assert.AreEqual(containers.Length, results.Count, "Length");
+          var l = Math.Min(containers.Length, results.Count);
+          for (var i = 0; i < l; ++i)
+            Assert.AreEqual(containers[i], results[i]);
+        }
+      });
+
+#if DEBUG
+      //var debugView = dt.DebugAllocatedNodes;
+#endif
+    }
     // TODO: other BoxF, Ray, Point query method tests
 
   }
