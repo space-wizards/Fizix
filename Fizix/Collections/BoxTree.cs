@@ -20,8 +20,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using InlineIL;
 using JetBrains.Annotations;
 using Math = CannyFastMath.Math;
 
@@ -71,7 +73,48 @@ namespace Fizix {
 
     private readonly IEqualityComparer<T> _equalityComparer;
 
-    private readonly ExtractBoxDelegate _extractBox;
+    private readonly ExtractBoxCallsite _extractBox;
+
+    public struct ExtractBoxCallsite {
+
+      private readonly unsafe void* _ptr;
+
+      private readonly object? _tgt;
+
+      public unsafe ExtractBoxCallsite(ExtractBoxDelegate callback) {
+        var p = (void***) Unsafe.AsPointer(ref Unsafe.AsRef(callback));
+        var methodPtr = (*p)[3];
+        var methodPtrAux = (*p)[4];
+        var isThisCall = methodPtrAux == default;
+        _ptr = isThisCall ? methodPtr : methodPtrAux;
+        _tgt = callback.Target;
+      }
+
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      public unsafe BoxF Invoke(in T value) {
+        IL.DeclareLocals(false);
+        var tgt = _tgt;
+        if (tgt != null) {
+          IL.Push(tgt);
+          IL.PushInRef(value);
+          IL.Push(_ptr);
+          IL.Emit.Tail();
+          IL.Emit.Calli(new StandAloneMethodSig(CallingConventions.HasThis, typeof(BoxF), typeof(T).MakeByRefType()));
+          return IL.Return<BoxF>();
+        }
+
+        IL.PushInRef(value);
+        IL.Push(_ptr);
+        IL.Emit.Tail();
+        IL.Emit.Calli(new StandAloneMethodSig(CallingConventions.Standard, typeof(BoxF), typeof(T).MakeByRefType()));
+        return IL.Return<BoxF>();
+      }
+
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private unsafe BoxF ExtractBox(in T value)
+      => _extractBox.Invoke(value);
 
     private Proxy _freeBranches;
 
@@ -94,7 +137,7 @@ namespace Fizix {
 
     public BoxTree(ExtractBoxDelegate extractBoxFunc, IEqualityComparer<T>? comparer = null, float boxNodeGrowth = 1f / 32, int capacity = 256, Func<int, int>? growthFunc = null, bool locking = false)
       : base(boxNodeGrowth, growthFunc, locking) {
-      _extractBox = extractBoxFunc;
+      _extractBox = new ExtractBoxCallsite(extractBoxFunc);
       _equalityComparer = comparer ?? EqualityComparer<T>.Default;
       capacity = Math.Max(MinimumCapacity, capacity);
 

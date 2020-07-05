@@ -11,10 +11,16 @@ namespace Fizix {
   public static class PolygonF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector2[] Create(params Vector2[] path) => path;
+    public static Span<Vector2> Create(params Vector2[] path) => path;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<Vector2> Create(Span<Vector2> path) => path;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ReadOnlySpan<Vector2> Create(ReadOnlySpan<Vector2> path) => path;
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool ContainsPoint(this Vector2[] poly, Vector2 point) {
+    public static bool ContainsPoint(this ReadOnlySpan<Vector2> poly, Vector2 point) {
       var result = false;
       var j = poly.Length - 1;
       var pY = point.Y;
@@ -27,8 +33,11 @@ namespace Fizix {
 
         if (iY < pY && jY >= pY
           || jY < pY && iY >= pY
-          && MathF.FusedMultiplyAdd((pY - iY) / (jY - iY), jX - iX, iX)
-          < pX)
+          && MathF.FusedMultiplyAdd(
+            (pY - iY) / (jY - iY),
+            jX - iX,
+            iX
+          ) < pX)
           result = !result;
         j = i;
       }
@@ -37,7 +46,7 @@ namespace Fizix {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Contains(this Vector2[] poly, params Vector2[] other) {
+    public static bool Contains(this ReadOnlySpan<Vector2> poly, Span<Vector2> other) {
       for (var i = 0; i < other.Length; ++i) {
         ref var point = ref other[i];
         if (!poly.ContainsPoint(point))

@@ -27,7 +27,7 @@ namespace Fizix {
 
         EnterWriteLock();
         try {
-          var box = _extractBox(item);
+          var box = ExtractBox(item);
 
           proxy = AllocateLeaf();
 
@@ -104,7 +104,7 @@ namespace Fizix {
 
         Assert(Equals(leafNode.Item, item));
 
-        var newBox = _extractBox(item);
+        var newBox = ExtractBox(item);
 
         if (leafNode.Box.Contains(newBox))
           return false;

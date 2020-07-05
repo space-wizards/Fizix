@@ -38,7 +38,7 @@ namespace Fizix {
 
         Assert(!parent.IsFree);
 
-        var box = approx ? leaf.Box : _extractBox(leaf.Item);
+        var box = approx ? leaf.Box : ExtractBox(leaf.Item);
 
         stack.Push(parent);
 
@@ -52,7 +52,7 @@ namespace Fizix {
             var item = _leaves[proxy.LeafIndex].Item;
 
             if (!approx) {
-              var preciseBox = _extractBox(item);
+              var preciseBox = ExtractBox(item);
 
               if (!preciseBox.Intersects(box))
                 continue;
